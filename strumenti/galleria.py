@@ -67,7 +67,7 @@ def voce(cartella, categoria):
         'link': scheda.get('link', ''),
         'alto': scheda.get('alto'),
         'copertina': immagini(cartella)[:1],
-        'design': immagini(cartella / 'design'),
+        'design': immagini(cartella / 'design') + [m for m in immagini(cartella / 'modello') if not m.endswith('.png')],
         'disegni': immagini(cartella / 'disegni'),
         'fogli': immagini(cartella / 'fogli'),
         'modelli': sorted(str(f.relative_to(QUI)) for f in cartella.glob('*.glb')),

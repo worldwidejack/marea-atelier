@@ -27,6 +27,7 @@ Dentro ogni cartella, quello che serve:
 - `disegni/` — un kit di disegni singoli (gli oggetti di un luogo);
 - `modello.glb` — il modello 3D finito (quello che va nel gioco);
 - `sprite/`, `armi/` — gli sprite a pixel tagliati (`<vista>_<mossa>_<n>.png` + `elenco.json`), solo gli approvati.
+- per i personaggi fatti con gli script degli sprite: anche `modello/` (la sagoma e le 5 viste) e `lavori.txt` (i prompt); `controllo/` (il banco di Fenaki) resta sul computer.
 
 `stato`: `idea` → `in lavorazione` → `approvato` (o `riferimento`, come le cose della prova dei look). Approvato = le persone l'hanno visto e nessuno è contrario (o 2 su 3). I bocciati **non si cancellano**: restano in `fogli/` col perché nel REGISTRO, servono a non rifare gli stessi errori.
 Solo immagini (PNG, JPG, WEBP), modelli GLB, JSON e testo. Mai segreti, token, link personali o dati personali: il repo è pubblico.
