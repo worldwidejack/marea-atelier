@@ -1,0 +1,31 @@
+{
+ "nome": "F3, il protagonista della prova dei look",
+ "pronome": "he",
+ "descrizione": "side-swept dark-brown hair with pointed locks, the big head about 45 % of his height on a short body, light tan skin, plain white T-shirt, deep-teal shorts, brick-red sneakers with cream soles",
+ "carattere": "He is a cool, ironic grown-up man of about 25 drawn as a caricature (big head on a small body), never a child",
+ "testa": 45,
+ "modello": "design/F3_design.jpg",
+ "viste": {
+  "S": "design/F3_vista_S.jpg",
+  "SE": "design/F3_vista_SE.jpg",
+  "E": "design/F3_vista_E.jpg",
+  "NE": "design/F3_vista_NE.jpg",
+  "N": "design/F3_vista_N.jpg"
+ },
+ "alto": 48,
+ "colori": 15,
+ "extra": [
+  "#78D6B6",
+  "#C4F6E2"
+ ],
+ "mosse": {
+  "cammina": "WALK CYCLE, 4 frames: right foot forward contact, passing pose with the legs together, left foot forward contact, passing pose with the legs together, arms swinging opposite to the legs (frame 2 is also the standing pose)",
+  "scatto": "DASH WITH A ROLL, 4 frames: crouched anticipation leaning back, explosive lunge forward stretched long and low, tucked into a ball rolling forward, landing back on his feet in a running pose",
+  "bevi": "DRINKING A POTION, 4 frames: holding a small round glass potion bottle with glowing mint liquid at chest height, raising it to his mouth, drinking with the head tilted back, lowering it with a satisfied grin",
+  "leggera": "WALK CYCLE CARRYING A ONE-HANDED WEAPON, 4 frames: exactly the same walking legs as the walk of the last attached sheet (right foot forward contact, passing pose with the legs together, left foot forward contact, passing pose with the legs together), the left arm swinging, while his RIGHT fist holds a straight rigid cyan rod like the hilt of a sword: 2 pixels thick, about as long as his legs, it starts inside his right fist and points forward and DOWN at about 45 degrees, nothing of it sticks out on the other side of the fist; the right arm hangs relaxed and keeps the rod steady.",
+  "pesante": "WALK CYCLE CARRYING A HEAVY TWO-HANDED WEAPON ON THE SHOULDER, 4 frames: the same walking legs as row 1, while BOTH fists, close together in front of his chest, hold the LOWER end of a straight rigid cyan rod 2 pixels thick and about as long as his whole body; the rod rests on his RIGHT shoulder and points UP and BACKWARD past his head; the arms stay still holding it while the legs walk.",
+  "onda": "ENERGY WAVE ATTACK like a famous anime energy blast, 4 frames: 1) feet wide apart in a low stance, both hands cupped together at his right hip with a small solid cyan ball (about 4 pixels) between the palms; 2) deeper crouch, body twisted back, hair blown upward by the power, the cyan ball between the cupped hands bigger (about 7 pixels); 3) thrusting both arms straight forward, palms open and pushed together, the cyan ball (about 7 pixels) right at the palms; 4) holding the push leaning forward, front knee bent, the cyan ball at the palms. Only the ball, no beam, no rays, no sparks: the effect is added later."
+ },
+ "stato": "riferimento",
+ "nota": "Il protagonista della prova dei look (28/10/2026): ha vinto il voto sul look, ma non è il protagonista definitivo. Si rifà da zero insieme (quest/01-protagonista.md). Resta il metro dello stile: misure, pixel, contorno, come si muove."
+}

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier di MAREA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #1b1712; --carta: #2a231b; --carta2: #342b21; --riga: #45392b;
+    --testo: #f4e3c1; --piano: #c9b394; --tenue: #8f7d66;
+    --mare: #3fb9c9; --mare-chiaro: #7fe3e0; --lanterna: #e8433f; --arancio: #f2a33a; --giallo: #f5d547; --erba: #8fc35b;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--fondo); }
+  body { margin: 0; background: var(--fondo); color: var(--testo); font: 400 15px/1.55 Inter, system-ui, sans-serif; }
+  a { color: var(--mare-chiaro); }
+  .pagina { max-width: 1120px; margin: 0 auto; padding: 0 16px 64px; }
+  h1, h2, h3 { font-family: 'Bricolage Grotesque', Inter, sans-serif; margin: 0; letter-spacing: -0.01em; }
+
+  /* testata */
+  .testata { background: repeating-linear-gradient(0deg, #1d2c3a 0 8px, #203244 8px 16px); border-bottom: 6px solid #2478a8; }
+  .testata .pagina { padding-top: 56px; padding-bottom: 40px; position: relative; }
+  .testata .pagina > img { position: absolute; right: 16px; bottom: 0; height: 250px; image-rendering: pixelated; }
+  .marchio { display: inline-flex; gap: 8px; align-items: center; color: var(--mare-chiaro); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; }
+  .marchio i { width: 10px; height: 10px; background: var(--lanterna); box-shadow: 0 0 12px var(--lanterna); display: inline-block; }
+  h1 { font-size: clamp(40px, 7vw, 76px); font-weight: 800; line-height: 0.95; margin: 14px 0 16px; }
+  h1 span { color: var(--giallo); }
+  .sotto { max-width: 620px; color: var(--piano); font-size: 17px; margin: 0; }
+  .numeri { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 26px; }
+  .numeri b { display: block; font: 800 30px 'Bricolage Grotesque', sans-serif; color: var(--testo); }
+  .numeri span { color: var(--tenue); font-size: 13px; }
+  .link { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+  .link a { text-decoration: none; color: var(--testo); background: var(--carta2); border: 1px solid var(--riga); padding: 7px 12px; border-radius: 6px; font-weight: 500; font-size: 14px; }
+  .link a:hover { border-color: var(--mare); }
+
+  section { margin-top: 44px; }
+  .titolo-sez { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+  .titolo-sez h2 { font-size: 28px; font-weight: 800; }
+  .titolo-sez span { color: var(--tenue); font-size: 14px; }
+
+  /* quest */
+  .quest { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .q { background: var(--carta); border: 1px solid var(--riga); border-left: 6px solid var(--giallo); border-radius: 8px; padding: 18px 18px 16px; text-decoration: none; color: inherit; display: block; }
+  .q:hover { border-color: var(--giallo); }
+  .q .etichetta { font-size: 12px; font-weight: 600; color: var(--fondo); background: var(--giallo); padding: 2px 8px; border-radius: 4px; }
+  .q h3 { font-size: 21px; margin: 10px 0 6px; }
+  .q p { margin: 0 0 10px; color: var(--piano); font-size: 14px; }
+  .q small { color: var(--tenue); }
+
+  /* personaggio */
+  .pg { background: var(--carta); border: 1px solid var(--riga); border-radius: 10px; display: grid; grid-template-columns: 340px 1fr; overflow: hidden; }
+  .palco { background: #20304a; position: relative; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .palco canvas { width: 100%; aspect-ratio: 1; image-rendering: pixelated; border-radius: 6px; background: #20304a; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: 500 13px Inter, sans-serif; color: var(--testo); background: #2b3d5a; border: 1px solid #3b5274; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--mare); border-color: var(--mare); color: #10202a; }
+  .chip.vista { padding: 4px 8px; font-size: 12px; min-width: 40px; }
+  .chip.gira[aria-pressed="true"] { background: var(--giallo); border-color: var(--giallo); }
+  .didascalia { font-size: 12px; color: #9fb3cc; min-height: 18px; }
+  .info { padding: 22px 24px 24px; min-width: 0; }
+  .info h3 { font-size: 26px; font-weight: 800; }
+  .stato { display: inline-block; margin: 8px 0 12px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--carta2); border: 1px solid var(--riga); }
+  .stato.approvato { background: var(--erba); color: #13200d; border: 0; }
+  .stato.riferimento { background: var(--arancio); color: #2a1606; border: 0; }
+  .nota { margin: 0 0 10px; }
+  .descr { margin: 0 0 18px; color: var(--tenue); font-size: 13px; font-style: italic; }
+  .etichetta-gruppo { font-size: 13px; font-weight: 600; color: var(--piano); margin: 18px 0 8px; }
+  .strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+  .strip button { flex: 0 0 auto; padding: 0; border: 1px solid var(--riga); border-radius: 6px; background: var(--carta2); cursor: zoom-in; overflow: hidden; }
+  .strip img { display: block; height: 120px; width: auto; }
+  .griglia { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; align-items: start; }
+  .griglia button { padding: 0; border: 1px solid var(--riga); border-radius: 4px; background: #ff00ff; cursor: zoom-in; overflow: hidden; display: block; }
+  .griglia img { width: 100%; height: auto; display: block; }
+  .griglia figcaption { font-size: 11px; color: var(--tenue); padding: 3px 2px 0; overflow-wrap: anywhere; }
+  .personaggi { display: grid; gap: 22px; }
+
+  /* lightbox */
+  dialog { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 94vh; }
+  dialog::backdrop { background: rgba(10, 8, 6, 0.88); }
+  dialog img { max-width: 96vw; max-height: 88vh; display: block; border-radius: 6px; }
+  dialog p { color: var(--piano); text-align: center; margin: 8px 0 0; font-size: 13px; }
+
+  footer { margin-top: 56px; color: var(--tenue); font-size: 13px; }
+  .vuoto { color: var(--tenue); }
+
+  @media (max-width: 760px) {
+    .pg { grid-template-columns: 1fr; }
+    .testata .pagina { padding-top: 36px; } .testata .pagina > img { display: none; }
+    .info { padding: 18px 16px 20px; }
+    .strip img { height: 96px; }
+  }
+</style>
+</head>
+<body>
+<header class="testata"><div class="pagina">
+    <div class="marchio"><i></i>MAREA</div>
+    <h1>L'Atelier<br><span>dei personaggi</span></h1>
+    <p class="sotto">Il posto dove nascono i personaggi di MAREA: disegni, viste, fogli generati, sprite e animazioni. Tutto quello che generiamo passa da qui, così ogni AI disegna nello stesso stile.</p>
+    <div class="numeri" id="numeri"></div>
+    <div class="link">
+      <a href="https://github.com/worldwidejack/marea-atelier/blob/main/STILE.md">Lo stile</a>
+      <a href="https://github.com/worldwidejack/marea-atelier/blob/main/CLAUDE.md">Le regole per gli AI</a>
+      <a href="https://github.com/worldwidejack/marea-atelier">Il repo</a>
+      <a href="https://worldwidejack.github.io/jack-tools/marea-armi/?look=sprite">La prova nel gioco</a>
+    </div>
+    <img id="eroe-testata" alt="" hidden>
+  </div></header>
+<div class="pagina">
+
+  <section>
+    <div class="titolo-sez"><h2>Quest</h2><span>i lavori aperti: prendine una</span></div>
+    <div class="quest" id="quest"></div>
+  </section>
+
+  <section>
+    <div class="titolo-sez"><h2>Personaggi</h2><span>tocca una mossa o una vista; «gira» li fa ruotare in 16 direzioni</span></div>
+    <div class="personaggi" id="personaggi"></div>
+  </section>
+
+  <footer id="piede"></footer>
+</div>
+
+<dialog id="lente"><img alt=""><p></p></dialog>
+
+<script>
+const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N'];
+// le 16 direzioni del gioco: le 9 disegnate e le 7 del lato sinistro, che sono lo specchio
+const GIRO = [...VISTE.map((v) => [v, false]), ...VISTE.slice(1, 8).reverse().map((v) => [v, true])];
+const NOMI_MOSSE = { cammina: 'cammina', scatto: 'scatto', bevi: 'pozione', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
+const NOMI_STATO = { idea: 'idea', 'in lavorazione': 'in lavorazione', approvato: 'approvato', riferimento: 'riferimento' };
+const REPO = 'https://github.com/worldwidejack/marea-atelier/blob/main/';
+
+const cache = new Map();
+function img(src) {
+  if (!cache.has(src)) { const i = new Image(); i.src = src; cache.set(src, i); }
+  return cache.get(src);
+}
+const el = (tag, attr = {}, ...figli) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attr)) k === 'class' ? (e.className = v) : k.startsWith('on') ? e.addEventListener(k.slice(2), v) : e.setAttribute(k, v);
+  for (const f of figli) if (f != null) e.append(f);
+  return e;
+};
+
+const lente = document.getElementById('lente');
+function apri(src, testo) { lente.querySelector('img').src = src; lente.querySelector('p').textContent = testo; lente.showModal(); }
+lente.addEventListener('click', () => lente.close());
+
+function palco(p) {
+  const tutte = { ...p.mosse, ...p.armi };
+  const ordine = Object.keys(NOMI_MOSSE);
+  const nomi = Object.keys(tutte).sort((a, b) => (ordine.indexOf(a) + 1 || 99) - (ordine.indexOf(b) + 1 || 99));
+  if (!nomi.length) return el('div', { class: 'palco' }, el('p', { class: 'didascalia' }, 'Ancora nessuno sprite.'));
+  const tela = el('canvas', { width: 240, height: 240 });
+  const g = tela.getContext('2d');
+  const stato = { mossa: nomi.includes('cammina') ? 'cammina' : nomi[0], giro: 2, gira: true, t: 0 };
+  const didascalia = el('div', { class: 'didascalia' });
+  const chipsMosse = el('div', { class: 'chips' });
+  const chipsViste = el('div', { class: 'chips' });
+  const bottoneGira = el('button', { class: 'chip gira', 'aria-pressed': 'true' }, 'gira');
+  bottoneGira.addEventListener('click', () => { stato.gira = !stato.gira; aggiornaChips(); });
+  for (const m of nomi) chipsMosse.append(el('button', { class: 'chip', 'data-m': m, onclick: () => { stato.mossa = m; aggiornaChips(); } }, NOMI_MOSSE[m] ?? m));
+  chipsViste.append(bottoneGira);
+  for (const v of VISTE) chipsViste.append(el('button', { class: 'chip vista', 'data-v': v, onclick: () => { stato.gira = false; stato.giro = VISTE.indexOf(v); aggiornaChips(); } }, v));
+  function aggiornaChips() {
+    for (const b of chipsMosse.children) b.setAttribute('aria-pressed', b.dataset.m === stato.mossa);
+    const [v] = GIRO[stato.giro];
+    for (const b of chipsViste.querySelectorAll('.vista')) b.setAttribute('aria-pressed', !stato.gira && b.dataset.v === v);
+    bottoneGira.setAttribute('aria-pressed', stato.gira);
+  }
+  aggiornaChips();
+  // precarica
+  for (const m of nomi) for (const ds of Object.values(tutte[m])) for (const d of ds) { img(d.src); if (d.sopra) img(d.sopra); }
+
+  const SCALA = 4, TERRA = 214;
+  function disegna(ora) {
+    const dt = Math.min(0.1, (ora - (stato.ultimo ?? ora)) / 1000); stato.ultimo = ora; stato.t += dt;
+    if (stato.gira) stato.giro = Math.floor(stato.t / 0.45) % GIRO.length;
+    const [vista, specchio] = GIRO[stato.giro];
+    const disegni = tutte[stato.mossa][vista] ?? [];
+    const d = disegni[Math.floor(stato.t * 7) % Math.max(1, disegni.length)];
+    // sfondo: un pezzo di molo
+    g.imageSmoothingEnabled = false;
+    g.fillStyle = '#20304a'; g.fillRect(0, 0, 240, 240);
+    for (let y = 0; y < 240; y += 12) { g.fillStyle = y % 24 ? '#22344f' : '#20304a'; g.fillRect(0, y, 240, 6); }
+    g.fillStyle = '#8e5a2b'; g.fillRect(0, TERRA - 4, 240, 30);
+    g.fillStyle = '#c98a4b'; for (let x = 0; x < 240; x += 40) g.fillRect(x, TERRA - 4, 38, 26);
+    g.fillStyle = '#5a3a1e'; g.fillRect(0, TERRA + 22, 240, 4);
+    g.fillStyle = 'rgba(35,32,31,0.35)'; g.beginPath(); g.ellipse(120, TERRA + 2, 26, 6, 0, 0, 7); g.fill();
+    if (d) {
+      const i = img(d.src);
+      if (i.complete && i.naturalWidth) {
+        const ax = d.ax ?? i.naturalWidth / 2, ay = d.ay ?? i.naturalHeight - 1;
+        g.save();
+        g.translate(120, TERRA + 2);
+        if (specchio) g.scale(-1, 1);
+        g.scale(SCALA, SCALA);
+        g.drawImage(i, -ax, -ay);
+        // dove andrà l'arma: un bastone d'acciaio dal pugno, poi la mano sopra
+        if (d.presa && d.lungo) {
+          const x0 = d.presa[0] - ax, y0 = d.presa[1] - ay;
+          const x1 = x0 + Math.cos(d.ang) * d.lungo, y1 = y0 + Math.sin(d.ang) * d.lungo;
+          g.lineCap = 'round';
+          g.strokeStyle = '#23201f'; g.lineWidth = 3; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+          g.strokeStyle = '#e8e1d6'; g.lineWidth = 1.4; g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+          const s = d.sopra && img(d.sopra);
+          if (s && s.complete && s.naturalWidth) g.drawImage(s, -ax, -ay);
+        }
+        g.restore();
+      }
+    }
+    didascalia.textContent = `${NOMI_MOSSE[stato.mossa] ?? stato.mossa} · vista ${vista}${specchio ? ' (specchio)' : ''}${d && d.presa ? ' · il bastone grigio è dove il gioco mette l\'arma' : ''}`;
+    requestAnimationFrame(disegna);
+  }
+  requestAnimationFrame(disegna);
+  return el('div', { class: 'palco' }, tela, chipsMosse, chipsViste, didascalia);
+}
+
+function scheda(p) {
+  const nDisegni = [...Object.values(p.mosse), ...Object.values(p.armi)].reduce((a, m) => a + Object.values(m).reduce((b, d) => b + d.length, 0), 0);
+  const info = el('div', { class: 'info' },
+    el('h3', {}, p.nome),
+    el('span', { class: `stato ${p.stato}` }, NOMI_STATO[p.stato] ?? p.stato),
+    p.nota ? el('p', { class: 'nota' }, p.nota) : null,
+    p.descrizione ? el('p', { class: 'descr' }, p.descrizione) : null,
+  );
+  if (p.design.length) {
+    info.append(el('div', { class: 'etichetta-gruppo' }, 'Disegno e viste'));
+    const s = el('div', { class: 'strip' });
+    for (const src of p.design) s.append(el('button', { onclick: () => apri(src, src.split('/').pop()) }, el('img', { src, alt: src.split('/').pop(), loading: 'lazy' })));
+    info.append(s);
+  }
+  if (p.fogli.length) {
+    info.append(el('div', { class: 'etichetta-gruppo' }, `Fogli generati · ${p.fogli.length}, da cui escono ${nDisegni} sprite`));
+    const gr = el('div', { class: 'griglia' });
+    for (const src of p.fogli) gr.append(el('figure', { style: 'margin:0' }, el('button', { onclick: () => apri(src, src.split('/').pop()) }, el('img', { src, alt: src.split('/').pop(), loading: 'lazy' })), el('figcaption', {}, src.split('/').pop().replace(/\.\w+$/, ''))));
+    info.append(gr);
+  }
+  info.append(el('div', { class: 'etichetta-gruppo' }, el('a', { href: `${REPO}personaggi/${p.id}/scheda.json` }, 'la scheda')));
+  return el('article', { class: 'pg' }, palco(p), info);
+}
+
+fetch('galleria.json', { cache: 'no-store' }).then((r) => r.json()).then((dati) => {
+  const aperte = dati.quest.filter((q) => q.stato !== 'chiusa');
+  const sprite = dati.personaggi.reduce((a, p) => a + [...Object.values(p.mosse), ...Object.values(p.armi)].reduce((b, m) => b + Object.values(m).reduce((c, d) => c + d.length, 0), 0), 0);
+  const numeri = document.getElementById('numeri');
+  for (const [n, t] of [[dati.personaggi.length, dati.personaggi.length === 1 ? 'personaggio' : 'personaggi'], [sprite, 'sprite'], [aperte.length, aperte.length === 1 ? 'quest aperta' : 'quest aperte']])
+    numeri.append(el('div', {}, el('b', {}, String(n)), el('span', {}, t)));
+  const quest = document.getElementById('quest');
+  if (!dati.quest.length) quest.append(el('p', { class: 'vuoto' }, 'Nessuna quest aperta.'));
+  dati.quest.forEach((q, i) => quest.append(el('a', { class: 'q', href: REPO + q.file },
+    el('span', { class: 'etichetta' }, `quest ${i + 1} · ${q.stato}`), el('h3', {}, q.titolo), el('p', {}, q.testo), el('small', {}, q.chi ? `chi: ${q.chi}` : 'libera'))));
+  const primo = dati.personaggi.find((p) => p.mosse.cammina?.SE);
+  if (primo) { const t = document.getElementById('eroe-testata'); t.src = primo.mosse.cammina.SE[1].src; t.hidden = false; }
+  const pg = document.getElementById('personaggi');
+  for (const p of dati.personaggi) pg.append(scheda(p));
+  document.getElementById('piede').textContent = `Aggiornata il ${new Date(dati.aggiornato).toLocaleString('it-IT', { dateStyle: 'long', timeStyle: 'short' })} · si rifà da sola a ogni push su main.`;
+}).catch(() => { document.getElementById('personaggi').append(el('p', { class: 'vuoto' }, 'Manca galleria.json: lancia python3 strumenti/galleria.py')); });
+</script>
+</body>
+</html>
