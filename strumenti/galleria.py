@@ -1,4 +1,5 @@
-"""La galleria dell'Atelier: legge personaggi/ e quest/ e scrive galleria.json, che index.html mostra.
+"""La galleria dell'Atelier: legge le cartelle del mondo (personaggi, modelli, luoghi, effetti, riferimenti) e quest/,
+e scrive galleria.json, che index.html mostra.
 
 Solo libreria standard (gira anche su GitHub a ogni push). Uso: python3 strumenti/galleria.py
 """
@@ -9,6 +10,8 @@ from pathlib import Path
 
 QUI = Path(__file__).resolve().parent.parent
 IMMAGINI = {'.png', '.jpg', '.jpeg', '.webp'}
+# le stanze dell'Atelier, nell'ordine della pagina
+CATEGORIE = ['personaggi', 'modelli', 'luoghi', 'effetti', 'riferimenti']
 # l'ordine delle viste disegnate, da davanti a dietro passando da destra
 VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']
 NOME = re.compile(r'^(?P<vista>[NSE]{1,3})_(?P<mossa>[a-z]+)_(?P<n>\d+)(?P<sopra>_sopra)?\.png$')
@@ -47,19 +50,27 @@ def mosse(cartella):
     return {m: {v: viste[v] for v in VISTE if v in viste} for m, viste in tutte.items()}
 
 
-def personaggio(cartella):
+def voce(cartella, categoria):
+    """Un pezzo del mondo: la sua scheda e quello che c'è nella sua cartella."""
     scheda = {}
     if (cartella / 'scheda.json').exists():
         scheda = json.loads((cartella / 'scheda.json').read_text(encoding='utf-8'))
     return {
         'id': cartella.name,
+        'categoria': categoria,
+        'tipo': scheda.get('tipo', categoria),
         'nome': scheda.get('nome', cartella.name),
         'stato': scheda.get('stato', 'idea'),
         'nota': scheda.get('nota', ''),
         'descrizione': scheda.get('descrizione', ''),
+        'generatore': scheda.get('generatore', ''),
+        'link': scheda.get('link', ''),
         'alto': scheda.get('alto'),
+        'copertina': immagini(cartella)[:1],
         'design': immagini(cartella / 'design'),
+        'disegni': immagini(cartella / 'disegni'),
         'fogli': immagini(cartella / 'fogli'),
+        'modelli': sorted(str(f.relative_to(QUI)) for f in cartella.glob('*.glb')),
         'mosse': mosse(cartella / 'sprite'),
         'armi': mosse(cartella / 'armi'),
     }
@@ -85,11 +96,11 @@ def main():
     dati = {
         'aggiornato': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'quest': [quest(f) for f in sorted((QUI / 'quest').glob('*.md'))],
-        'personaggi': [personaggio(c) for c in sorted((QUI / 'personaggi').iterdir()) if c.is_dir()],
+        'categorie': {c: [voce(d, c) for d in sorted((QUI / c).iterdir()) if d.is_dir()] if (QUI / c).is_dir() else [] for c in CATEGORIE},
     }
     (QUI / 'galleria.json').write_text(json.dumps(dati, ensure_ascii=False, indent=1), encoding='utf-8')
-    n = sum(len(d) for p in dati['personaggi'] for k in ('mosse', 'armi') for v in p[k].values() for d in v.values())
-    print(f"galleria.json: {len(dati['personaggi'])} personaggi, {len(dati['quest'])} quest, {n} disegni nelle mosse")
+    conta = ', '.join(f'{len(v)} {c}' for c, v in dati['categorie'].items())
+    print(f"galleria.json: {conta}, {len(dati['quest'])} quest")
 
 
 if __name__ == '__main__':

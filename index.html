@@ -51,6 +51,8 @@
   .q small { color: var(--tenue); }
 
   /* personaggio */
+  .pg + .pg { margin-top: 22px; }
+  .pg.solo { grid-template-columns: 1fr; }
   .pg { background: var(--carta); border: 1px solid var(--riga); border-radius: 10px; display: grid; grid-template-columns: 340px 1fr; overflow: hidden; }
   .palco { background: #20304a; position: relative; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
   .palco canvas { width: 100%; aspect-ratio: 1; image-rendering: pixelated; border-radius: 6px; background: #20304a; }
@@ -83,6 +85,25 @@
   dialog img { max-width: 96vw; max-height: 88vh; display: block; border-radius: 6px; }
   dialog p { color: var(--piano); text-align: center; margin: 8px 0 0; font-size: 13px; }
 
+  .filtri { position: sticky; top: 0; z-index: 5; display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 0; margin-top: 36px; background: var(--fondo); border-bottom: 1px solid var(--riga); }
+  .filtri .chip { background: var(--carta2); border-color: var(--riga); font-size: 14px; padding: 6px 14px; }
+  .filtri .chip[aria-pressed="true"] { background: var(--giallo); border-color: var(--giallo); color: #2a1606; }
+  .filtri .chip small { opacity: 0.7; margin-left: 4px; }
+  .modelli { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .mod { background: var(--carta); border: 1px solid var(--riga); border-radius: 10px; overflow: hidden; }
+  .mod .vetrina { position: relative; aspect-ratio: 1; background: radial-gradient(circle at 50% 70%, #3a4d66, #20304a 70%); }
+  .mod model-viewer, .mod .vetrina > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mod .vetrina > img { object-fit: contain; padding: 18px; opacity: 0; transition: opacity 0.2s; pointer-events: none; image-rendering: auto; }
+  .mod .vetrina.disegno > img { opacity: 1; }
+  .mod .vetrina.disegno model-viewer { opacity: 0; }
+  .mod .giro { position: absolute; left: 10px; bottom: 10px; z-index: 2; }
+  .mod .testo { padding: 12px 14px 14px; }
+  .mod h3 { font-size: 18px; }
+  .mod p { margin: 4px 0 0; font-size: 13px; color: var(--tenue); }
+  .disegni { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; }
+  .disegni button { padding: 6px; border: 1px solid var(--riga); border-radius: 6px; background: #efe0c2; cursor: zoom-in; aspect-ratio: 1; }
+  .disegni img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .vuota { background: var(--carta); border: 1px dashed var(--riga); border-radius: 10px; padding: 18px; color: var(--tenue); }
   footer { margin-top: 56px; color: var(--tenue); font-size: 13px; }
   .vuoto { color: var(--tenue); }
 
@@ -97,8 +118,8 @@
 <body>
 <header class="testata"><div class="pagina">
     <div class="marchio"><i></i>MAREA</div>
-    <h1>L'Atelier<br><span>dei personaggi</span></h1>
-    <p class="sotto">Il posto dove nascono i personaggi di MAREA: disegni, viste, fogli generati, sprite e animazioni. Tutto quello che generiamo passa da qui, così ogni AI disegna nello stesso stile.</p>
+    <h1>L'Atelier<br><span>di MAREA</span></h1>
+    <p class="sotto">Il posto dove nasce il mondo di MAREA: personaggi, modelli 3D, luoghi, effetti, riferimenti. Tutto quello che generiamo passa da qui, così ogni AI lavora nello stesso stile.</p>
     <div class="numeri" id="numeri"></div>
     <div class="link">
       <a href="https://github.com/worldwidejack/marea-atelier/blob/main/STILE.md">Lo stile</a>
@@ -115,16 +136,15 @@
     <div class="quest" id="quest"></div>
   </section>
 
-  <section>
-    <div class="titolo-sez"><h2>Personaggi</h2><span>tocca una mossa o una vista; «gira» li fa ruotare in 16 direzioni</span></div>
-    <div class="personaggi" id="personaggi"></div>
-  </section>
+  <nav class="filtri" id="filtri"></nav>
+  <div id="stanze"></div>
 
   <footer id="piede"></footer>
 </div>
 
 <dialog id="lente"><img alt=""><p></p></dialog>
 
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <script>
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N'];
 // le 16 direzioni del gioco: le 9 disegnate e le 7 del lato sinistro, che sono lo specchio
@@ -219,46 +239,106 @@ function palco(p) {
   return el('div', { class: 'palco' }, tela, chipsMosse, chipsViste, didascalia);
 }
 
-function scheda(p) {
-  const nDisegni = [...Object.values(p.mosse), ...Object.values(p.armi)].reduce((a, m) => a + Object.values(m).reduce((b, d) => b + d.length, 0), 0);
-  const info = el('div', { class: 'info' },
+const nome = (src) => src.split('/').pop();
+const contaSprite = (p) => [...Object.values(p.mosse), ...Object.values(p.armi)].reduce((a, m) => a + Object.values(m).reduce((b, d) => b + d.length, 0), 0);
+
+function info(p) {
+  const nDisegni = contaSprite(p);
+  const box = el('div', { class: 'info' },
     el('h3', {}, p.nome),
     el('span', { class: `stato ${p.stato}` }, NOMI_STATO[p.stato] ?? p.stato),
     p.nota ? el('p', { class: 'nota' }, p.nota) : null,
     p.descrizione ? el('p', { class: 'descr' }, p.descrizione) : null,
   );
   if (p.design.length) {
-    info.append(el('div', { class: 'etichetta-gruppo' }, 'Disegno e viste'));
+    box.append(el('div', { class: 'etichetta-gruppo' }, p.categoria === 'personaggi' ? 'Disegno e viste' : 'Fogli e confronti'));
     const s = el('div', { class: 'strip' });
-    for (const src of p.design) s.append(el('button', { onclick: () => apri(src, src.split('/').pop()) }, el('img', { src, alt: src.split('/').pop(), loading: 'lazy' })));
-    info.append(s);
+    for (const src of p.design) s.append(el('button', { onclick: () => apri(src, nome(src)) }, el('img', { src, alt: nome(src), loading: 'lazy' })));
+    box.append(s);
+  }
+  if (p.disegni.length) {
+    box.append(el('div', { class: 'etichetta-gruppo' }, `I disegni · ${p.disegni.length}`));
+    const gr = el('div', { class: 'disegni' });
+    for (const src of p.disegni) gr.append(el('button', { title: nome(src), onclick: () => apri(src, nome(src)) }, el('img', { src, alt: nome(src), loading: 'lazy' })));
+    box.append(gr);
   }
   if (p.fogli.length) {
-    info.append(el('div', { class: 'etichetta-gruppo' }, `Fogli generati · ${p.fogli.length}, da cui escono ${nDisegni} sprite`));
+    box.append(el('div', { class: 'etichetta-gruppo' }, `Fogli generati · ${p.fogli.length}${nDisegni ? `, da cui escono ${nDisegni} sprite` : ''}`));
     const gr = el('div', { class: 'griglia' });
-    for (const src of p.fogli) gr.append(el('figure', { style: 'margin:0' }, el('button', { onclick: () => apri(src, src.split('/').pop()) }, el('img', { src, alt: src.split('/').pop(), loading: 'lazy' })), el('figcaption', {}, src.split('/').pop().replace(/\.\w+$/, ''))));
-    info.append(gr);
+    for (const src of p.fogli) gr.append(el('figure', { style: 'margin:0' }, el('button', { onclick: () => apri(src, nome(src)) }, el('img', { src, alt: nome(src), loading: 'lazy' })), el('figcaption', {}, nome(src).replace(/\.\w+$/, ''))));
+    box.append(gr);
   }
-  info.append(el('div', { class: 'etichetta-gruppo' }, el('a', { href: `${REPO}personaggi/${p.id}/scheda.json` }, 'la scheda')));
-  return el('article', { class: 'pg' }, palco(p), info);
+  const link = el('div', { class: 'etichetta-gruppo' }, el('a', { href: `${REPO}${p.categoria}/${p.id}/scheda.json` }, 'la scheda'));
+  if (p.link) link.append(' · ', el('a', { href: p.link }, 'provalo'));
+  box.append(link);
+  return box;
 }
 
+function modello(p) {
+  const vetrina = el('div', { class: 'vetrina' });
+  const mv = el('model-viewer', { src: p.modelli[0], alt: p.nome, 'auto-rotate': '', 'camera-controls': '', 'rotation-per-second': '24deg', 'interaction-prompt': 'none', 'shadow-intensity': '0.6', exposure: '1.05', 'camera-orbit': '30deg 72deg auto', loading: 'lazy' });
+  vetrina.append(mv);
+  const dis = p.copertina[0];
+  if (dis) {
+    vetrina.append(el('img', { src: dis, alt: `disegno di ${p.nome}`, loading: 'lazy' }));
+    const b = el('button', { class: 'chip giro', 'aria-pressed': 'false' }, 'disegno');
+    b.addEventListener('click', () => { const on = vetrina.classList.toggle('disegno'); b.setAttribute('aria-pressed', on); });
+    vetrina.append(b);
+  }
+  return el('article', { class: 'mod' }, vetrina, el('div', { class: 'testo' },
+    el('h3', {}, p.nome),
+    el('span', { class: `stato ${p.stato}` }, NOMI_STATO[p.stato] ?? p.stato),
+    el('p', {}, [p.generatore && `fatto con ${p.generatore}`, p.alto && `alto ${String(p.alto).replace('.', ',')} m`].filter(Boolean).join(' · ')),
+    el('p', {}, el('a', { href: `${REPO}${p.categoria}/${p.id}/scheda.json` }, 'la scheda'))));
+}
+
+const STANZE = {
+  personaggi: ['Personaggi', 'tocca una mossa o una vista; «gira» li fa ruotare in 16 direzioni'],
+  modelli: ['Modelli 3D', 'girali col dito; «disegno» mostra da cosa sono nati'],
+  luoghi: ['Luoghi', 'isole, zone, posti: il kit dei disegni e com\'è venuto'],
+  effetti: ['Effetti', 'onde, fulmini, evocazioni, polvere'],
+  riferimenti: ['Riferimenti', 'cose di altri che ci piacciono: si studiano, non sono canone'],
+};
+
 fetch('galleria.json', { cache: 'no-store' }).then((r) => r.json()).then((dati) => {
+  const tutti = Object.values(dati.categorie).flat();
   const aperte = dati.quest.filter((q) => q.stato !== 'chiusa');
-  const sprite = dati.personaggi.reduce((a, p) => a + [...Object.values(p.mosse), ...Object.values(p.armi)].reduce((b, m) => b + Object.values(m).reduce((c, d) => c + d.length, 0), 0), 0);
+  const sprite = tutti.reduce((a, p) => a + contaSprite(p), 0);
   const numeri = document.getElementById('numeri');
-  for (const [n, t] of [[dati.personaggi.length, dati.personaggi.length === 1 ? 'personaggio' : 'personaggi'], [sprite, 'sprite'], [aperte.length, aperte.length === 1 ? 'quest aperta' : 'quest aperte']])
+  for (const [n, t] of [[tutti.length, 'pezzi del mondo'], [sprite, 'sprite'], [dati.categorie.modelli?.length ?? 0, 'modelli 3D'], [aperte.length, aperte.length === 1 ? 'quest aperta' : 'quest aperte']])
     numeri.append(el('div', {}, el('b', {}, String(n)), el('span', {}, t)));
   const quest = document.getElementById('quest');
   if (!dati.quest.length) quest.append(el('p', { class: 'vuoto' }, 'Nessuna quest aperta.'));
   dati.quest.forEach((q, i) => quest.append(el('a', { class: 'q', href: REPO + q.file },
     el('span', { class: 'etichetta' }, `quest ${i + 1} · ${q.stato}`), el('h3', {}, q.titolo), el('p', {}, q.testo), el('small', {}, q.chi ? `chi: ${q.chi}` : 'libera'))));
-  const primo = dati.personaggi.find((p) => p.mosse.cammina?.SE);
+  const primo = (dati.categorie.personaggi ?? []).find((p) => p.mosse.cammina?.SE);
   if (primo) { const t = document.getElementById('eroe-testata'); t.src = primo.mosse.cammina.SE[1].src; t.hidden = false; }
-  const pg = document.getElementById('personaggi');
-  for (const p of dati.personaggi) pg.append(scheda(p));
+
+  const stanze = document.getElementById('stanze'), filtri = document.getElementById('filtri');
+  const sezioni = {};
+  for (const [cat, voci] of Object.entries(dati.categorie)) {
+    const [titolo, aiuto] = STANZE[cat] ?? [cat, ''];
+    const corpo = cat === 'modelli' ? el('div', { class: 'modelli' }) : el('div');
+    if (!voci.length) corpo.append(el('p', { class: 'vuota' }, `Ancora niente. Si comincia da una cartella in ${cat}/ con la sua scheda.json.`));
+    for (const p of voci) {
+      if (cat === 'modelli' && p.modelli.length) corpo.append(modello(p));
+      else if (Object.keys(p.mosse).length || Object.keys(p.armi).length) corpo.append(el('article', { class: 'pg' }, palco(p), info(p)));
+      else corpo.append(el('article', { class: 'pg solo' }, info(p)));
+    }
+    sezioni[cat] = el('section', { id: cat }, el('div', { class: 'titolo-sez' }, el('h2', {}, titolo), el('span', {}, aiuto)), corpo);
+    stanze.append(sezioni[cat]);
+  }
+  const chips = [['tutto', 'tutto', tutti.length], ...Object.entries(dati.categorie).map(([c, v]) => [c, STANZE[c]?.[0] ?? c, v.length])];
+  for (const [c, t, n] of chips) {
+    const b = el('button', { class: 'chip', 'aria-pressed': c === 'tutto' ? 'true' : 'false' }, t, el('small', {}, String(n)));
+    b.addEventListener('click', () => {
+      for (const x of filtri.children) x.setAttribute('aria-pressed', x === b);
+      for (const [k, sez] of Object.entries(sezioni)) sez.hidden = c !== 'tutto' && k !== c;
+    });
+    filtri.append(b);
+  }
   document.getElementById('piede').textContent = `Aggiornata il ${new Date(dati.aggiornato).toLocaleString('it-IT', { dateStyle: 'long', timeStyle: 'short' })} · si rifà da sola a ogni push su main.`;
-}).catch(() => { document.getElementById('personaggi').append(el('p', { class: 'vuoto' }, 'Manca galleria.json: lancia python3 strumenti/galleria.py')); });
+}).catch((e) => { console.error(e); document.getElementById('stanze').append(el('p', { class: 'vuoto' }, 'Manca galleria.json: lancia python3 strumenti/galleria.py')); });
 </script>
 </body>
 </html>

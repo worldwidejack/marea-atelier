@@ -1,0 +1,8 @@
+{
+ "nome": "Palma",
+ "tipo": "modello 3D",
+ "stato": "riferimento",
+ "alto": 7.5,
+ "nota": "Dalla prova dei look (28/10/2026): disegno nello stile «nero 1» → modello con SAM 3 → Blender (tavolozza, triangoli, base). Riferimento, non definitivo: il mondo di MAREA si costruisce un'isola alla volta.",
+ "generatore": "SAM 3"
+}
