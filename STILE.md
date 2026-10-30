@@ -35,7 +35,7 @@
 - Spazio vuoto fra le righe: il generatore fa salire i capelli nella riga sopra.
 
 ## Generatori
-- **Codex / ChatGPT**: è quello che funziona (108 sprite di F3 e le 3 mosse delle armi, buoni al primo colpo). Codex in automatico (`genera.py`), ChatGPT a mano (`prompt.py --stampa`) anche coi crediti gratuiti del giorno.
+- **Codex / ChatGPT**: è quello che funziona (108 sprite di F3 e le 3 mosse delle armi, buoni al primo colpo). Codex in automatico (`genera.py`), ChatGPT a mano (`prompt.py --stampa`) anche coi crediti gratuiti del giorno. *Nota per chi usa ChatGPT free (Riccardo, Alberto/birba)*: permette di allegare al **massimo 2 immagini di riferimento** per messaggio; se uno script ne indica 3, allegare solo le 2 prioritarie (la vista di posa e il foglio di stile/design).
 - **Gemini**: bocciato per le mosse (prova di Riccardo, 29/10). Colori, proporzioni e pixel quasi a posto, ma le pose no: camminata con 4 disegni quasi uguali e gambe mai unite, capriola senza preparazione né atterraggio, la boccetta che cambia forma a ogni disegno. Anche col foglio approvato allegato.
 - **Un personaggio, un generatore**: un personaggio nato con Codex si finisce con Codex.
 
