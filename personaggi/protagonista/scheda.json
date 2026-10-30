@@ -24,5 +24,9 @@
   "cammina": "WALK CYCLE, 4 frames: right foot forward contact, passing pose with the legs together, left foot forward contact, passing pose with the legs together, arms swinging opposite to the legs (frame 2 is also the standing pose)"
  },
  "stato": "in lavorazione",
- "nota": "Proposta di Riccardo per la Quest 1. Giro 1 completato (viste SE, E, NE a pixel, 12 sprite) in _FOGLIO_sprite.jpg."
+ "nota": "Proposta di Riccardo per la Quest 1. Camminata completa in 9 viste (Giro 1 SE, E, NE + Giro 2 S, SSE, ESE, ENE, NNE, N): 36 sprite in _FOGLIO_sprite.jpg. Bozza: manca l'ok di Jack e Alberto sul Giro 1 (2 su 3). Tavolozza a 18 colori.",
+ "extra": [
+  "#F87B63",
+  "#B25040"
+ ]
 }
