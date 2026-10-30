@@ -2,6 +2,16 @@
 
 Serve a vedere uno sprite **dentro il Borgo vero**, accanto all'avatar 3D, prima di decidere se un look va bene. Non cambia il gioco: aggiunge qualche file in più al tuo checkout di `worldwidejack/marea` e li tiene fuori da git.
 
+## Da zero (Jack, Alberto, e i vostri AI)
+Vuoi vedere il tuo sprite nel Borgo? Chiedilo al tuo AI: «prova il mio personaggio nel Borgo col banco dell'Atelier». Lui deve fare questo:
+1. `git pull` nell'Atelier (e il tuo personaggio deve avere `personaggi/<id>/sprite/` con `elenco.json`).
+2. Se non hai il gioco: `git clone https://github.com/worldwidejack/marea.git`, poi `npm install` dentro (Windows PowerShell: `npm.cmd`). Se ce l'hai, `git pull` (meglio una copia pulita o una worktree: il banco aggiunge file, ma li esclude da git).
+3. `node strumenti/banco-borgo/installa.mjs <cartella-del-gioco> <id>` (dall'Atelier).
+4. Nel gioco: `npm run dev` (porta 5173; sul tuo PC, non serve nessun server di Cloudflare).
+5. Apri `http://localhost:5173/_banco.html?test=1&net=0&slot=0&sprite=<id>&accanto=1&mossa=camminata` (frecce o joystick per muoverti, rotella o pizzico per lo zoom).
+6. Per controllare la grandezza: `node _banco/zoom.mjs <id>` (dentro il gioco): ogni riga deve dire rapporto 1.00.
+Aspetta: la pagina ci mette 30-60 secondi a caricare tutti i disegni (il server li serve uno alla volta). Non serve account né connessione al gioco vero (`net=0`).
+
 ## Installarlo (una volta, e ogni volta che arrivano sprite nuovi)
 Ti serve il gioco clonato e con `npm install` fatto (e Playwright, che il gioco ha già per i test). Dall'Atelier:
 ```
