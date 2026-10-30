@@ -24,5 +24,5 @@
   "cammina": "WALK CYCLE, 4 frames: right foot forward contact, passing pose with the legs together, left foot forward contact, passing pose with the legs together, arms swinging opposite to the legs (frame 2 is also the standing pose)"
  },
  "stato": "in lavorazione",
- "nota": "Proposta di Riccardo per la Quest 1. Modello in 5 viste completato in modello/_FOGLIO_5_viste.jpg."
+ "nota": "Proposta di Riccardo per la Quest 1. Giro 1 completato (viste SE, E, NE a pixel, 12 sprite) in _FOGLIO_sprite.jpg."
 }
