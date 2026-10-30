@@ -34,6 +34,7 @@ Solo immagini (PNG, JPG, WEBP), modelli GLB, JSON e testo. Mai segreti, token, l
 
 ## Gli attrezzi
 - **Sprite dei personaggi**: gli script stanno nel repo del gioco, `marea/tools/sprite/` (prompt, genera, pixel, foglio, in_fenaki), con la ricetta nella skill `marea/.claude/skills/sprite-marea/SKILL.md`. Funzionano su una cartella: dagli `personaggi/<id>`.
+- **Provare gli sprite nel Borgo vero** (accanto all'avatar 3D, telefono e finestra larga, foto e fogli A/B): il banco in `strumenti/banco-borgo/` (`LEGGIMI.md`). `node strumenti/banco-borgo/installa.mjs <cartella-del-gioco>` lo mette nel tuo checkout di `marea` senza toccare git.
 - **Armi a strati** (bastone di ciano → arma 3D in mano): ricetta e script nel banco, `marea-prova-look/CLAUDE.md`.
 - **Modelli 3D dai disegni**: la catena della prova dei look (in `marea-prova-look/strumenti/`: `ritaglia_3d.py`, `senza_bordo.py`, `blender_modello.py`, `giro_modello.py`); le lezioni sono in `STILE.md`.
 - **Fenaki** (`worldwidejack/fenaki`) per guardare un'animazione un disegno alla volta: la persona segna dove un passaggio scatta, tu leggi i segni (`giudizi`) e correggi. `in_fenaki.py` prepara la cartella. Sugli sprite non usare `teste`, `zampe` e i «doppioni» della diagnosi: sono tarati sul gatto di Matemagica.
