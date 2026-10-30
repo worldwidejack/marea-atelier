@@ -1,5 +1,5 @@
 # Il protagonista, da zero
-stato: aperta
+stato: gradini 1-6 fatti e approvati dai tre (30/10/2026); manca solo il passo «nel banco prende il posto di F3» (il Borgo di prova di Riccardo e `marea-prova-look`)
 chi: tutti e tre (Jack, Riccardo, Alberto) con i loro AI
 cartella: personaggi/protagonista/
 

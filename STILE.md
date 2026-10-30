@@ -1,6 +1,6 @@
 # Lo stile di MAREA
 
-> Da leggere prima di generare qualsiasi cosa: personaggi, modelli 3D, luoghi, effetti. Quando il protagonista definitivo è approvato (quest 1), le misure dei personaggi si aggiornano su di lui; fino ad allora il metro è F3 della prova dei look (`personaggi/f3-prova/`), e per il mondo il porto «nero 1» (`luoghi/porto-nero-1/`).
+> Da leggere prima di generare qualsiasi cosa: personaggi, modelli 3D, luoghi, effetti. Il protagonista definitivo è approvato (quest 1, 30/10/2026, tutti e tre): le misure dei personaggi si prendono da lui (`personaggi/protagonista/`: 48 px, testa al 45 %, 20 colori, le sue 8 mosse in 9 viste). F3 della prova dei look (`personaggi/f3-prova/`) resta come riferimento storico; per il mondo il metro è il porto «nero 1» (`luoghi/porto-nero-1/`).
 
 ## Il look, in una riga
 **Mondo 3D che sembra disegnato, personaggi 2.5D in pixel art** (voto del gruppo, 28/10/2026). Chi ha una faccia (giocatori, abitanti, mostri, boss) è a sprite; le cose e le macchine sono 3D, come alberi ed edifici.
