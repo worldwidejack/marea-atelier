@@ -47,6 +47,8 @@ Dai 12 principi dell'animazione di Disney (Thomas e Johnston, *The Illusion of L
 - **Camminata**: «passing pose with the legs together» nei disegni 2 e 4, sennò da fermo resta a metà passo.
 - **Allega il foglio a pixel approvato della stessa vista**: con quello Codex ha fatto 9 fogli su 9 buoni al primo colpo.
 - Spazio vuoto fra le righe: il generatore fa salire i capelli nella riga sopra.
+- **Codex in parallelo**: con 4 fogli alla volta due possono uscire identici (copiano l'ultima immagine generata, nella stessa cartella di Codex). Dopo ogni lotto confronta gli `md5sum` dei fogli; se due coincidono, rifai una vista alla volta (`genera.py … --rifai --paralleli 1`).
+- **Il bastone di ciano**: di spalle la prima volta usciva sottile e quasi sparito sotto il contorno (1-5 pixel ciano contro 17-25 delle altre viste). Nel prompt serve «bright pure cyan #00FFFF, at least 2 full pixels thick along its whole length, drawn on top of everything». Si controlla contando i pixel `#00FFFF` per sprite.
 
 ## Generatori
 - **Codex / ChatGPT**: è quello che funziona (108 sprite di F3 e le 3 mosse delle armi, buoni al primo colpo). Codex in automatico (`genera.py`), ChatGPT a mano (`prompt.py --stampa`) anche coi crediti gratuiti del giorno. *Nota per chi usa ChatGPT free (Riccardo, Alberto/birba)*: permette di allegare al **massimo 2 immagini di riferimento** per messaggio; se uno script ne indica 3, allegare solo le 2 prioritarie (la vista di posa e il foglio di stile/design).
