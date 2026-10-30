@@ -149,8 +149,10 @@
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N'];
 // le 16 direzioni del gioco: le 9 disegnate e le 7 del lato sinistro, che sono lo specchio
 const GIRO = [...VISTE.map((v) => [v, false]), ...VISTE.slice(1, 8).reverse().map((v) => [v, true])];
-const NOMI_MOSSE = { cammina: 'cammina', scatto: 'scatto', bevi: 'pozione', salta: 'salto', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
-const NOMI_STATO = { idea: 'idea', 'in lavorazione': 'in lavorazione', approvato: 'approvato', riferimento: 'riferimento' };
+const NOMI_MOSSE = { cammina: 'cammina', camminata: 'camminata a 8 pose', corsa: 'corsa a 8 pose', scatto: 'scatto', bevi: 'pozione', salta: 'salto', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
+// disegni al secondo: 7 di serie (i cicli da 4); i cicli da 8 pose vanno più svelti, la corsa più della camminata
+const FPS = { camminata: 10, corsa: 14 };
+const NOMI_STATO ={ idea: 'idea', 'in lavorazione': 'in lavorazione', approvato: 'approvato', riferimento: 'riferimento' };
 const REPO = 'https://github.com/worldwidejack/marea-atelier/blob/main/';
 
 const cache = new Map();
@@ -201,7 +203,7 @@ function palco(p) {
     if (stato.gira) stato.giro = Math.floor(stato.t / 0.45) % GIRO.length;
     const [vista, specchio] = GIRO[stato.giro];
     const disegni = tutte[stato.mossa][vista] ?? [];
-    const d = disegni[Math.floor(stato.t * 7) % Math.max(1, disegni.length)];
+    const d = disegni[Math.floor(stato.t * (FPS[stato.mossa] ?? 7)) % Math.max(1, disegni.length)];
     // sfondo: un pezzo di molo
     g.imageSmoothingEnabled = false;
     g.fillStyle = '#20304a'; g.fillRect(0, 0, 240, 240);
