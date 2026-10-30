@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
-type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string };
+type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string; distanza?: boolean };
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']; // 0°, 22.5° … 180° dalla camera (davanti → dietro passando da destra)
 
 export async function avvia(cfg: Cfg) {
@@ -18,7 +18,7 @@ export async function avvia(cfg: Cfg) {
   await Promise.all(chiavi.map(async (k) => {
     const img = new Image(); img.src = base + k + '.png'; await img.decode();
     const t = new THREE.Texture(img);
-    t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true;
+    t.magFilter = THREE.NearestFilter; t.minFilter = cfg.nitido ? THREE.NearestFilter : THREE.LinearMipmapLinearFilter; t.generateMipmaps = !cfg.nitido; t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; // a scala continua i pixel si rimpiccioliscono: il mipmap li sfuma invece di saltarli
     tex.set(k, t);
   }));
 
@@ -39,6 +39,23 @@ export async function avvia(cfg: Cfg) {
   B.scene.add(pivot, ombra);
 
   const st = { x: cfg.x ?? 0, z: cfg.z ?? 0, facing: cfg.facing ?? 0, mossa: cfg.mossa ?? 'cammina', muove: false, mezzo: 0, t: 0, dist: 0 };
+  // PASSO: quanti pixel d'arte è lungo un passo disegnato, dal disegno di contatto di profilo (E_<mossa>_1): la larghezza dei piedi
+  // nelle 3 righe più basse meno un piede (quella del disegno di passaggio, gambe unite). Coi disegni legati alla distanza i piedi non scivolano.
+  const passoPx = new Map<string, number>();
+  function larghezzaPiedi(k: string) {
+    const t = tex.get(k), e = elenco[k]; if (!t || !e) return 0;
+    const c = document.createElement('canvas'); c.width = e.w; c.height = e.h;
+    const g = c.getContext('2d')!; g.drawImage(t.image as HTMLImageElement, 0, 0);
+    const d = g.getImageData(0, 0, e.w, e.h).data; let x0 = e.w, x1 = -1;
+    for (let y = Math.max(0, e.ay - 3); y < Math.min(e.h, e.ay); y++) for (let x = 0; x < e.w; x++) if (d[(y * e.w + x) * 4 + 3]! > 0) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); }
+    return x1 >= x0 ? x1 - x0 + 1 : 0;
+  }
+  for (const m of new Set(chiavi.map((k) => k.split('_')[1]!))) {
+    const nf = chiavi.filter((k) => k.startsWith(`E_${m}_`)).length;
+    const largo = larghezzaPiedi(`E_${m}_1`), unito = larghezzaPiedi(`E_${m}_${nf === 8 ? 3 : 2}`);
+    if (largo && unito) passoPx.set(m, Math.max(4, largo - unito));
+  }
+  const allaDistanza = cfg.distanza !== false;
   const av0 = G.state().avatar;
   const dx = cfg.dx ?? -2.6, dz = cfg.dz ?? 0; // scostamento in «schermo»: dx negativo = a sinistra dell'avatar (asse destra della camera)
   let avPrec = { x: av0.x, z: av0.z };
@@ -73,9 +90,17 @@ export async function avvia(cfg: Cfg) {
     let best = viste[0]!, bd = 1e9;
     for (const vi of viste) { const d = Math.abs(VISTE.indexOf(vi) * 22.5 - a); if (d < bd) { bd = d; best = vi; } }
     const specchio = ang < -1e-6 && best !== 'S' && best !== 'N';
-    st.t += dt;
     let nf = 0; while (elenco[`${best}_${st.mossa}_${nf + 1}`]) nf++; // i disegni che ci sono: 4 (cammina) o 8 (camminata, corsa)
-    const n = st.muove ? 1 + (Math.floor(st.t * fps) % Math.max(1, nf)) : (nf === 4 ? 2 : 1); // da fermo: il disegno 2 della camminata a 4 (gambe unite), il 1 delle altre
+    const e0 = elenco[`${best}_${st.mossa}_1`]; if (!e0) return;
+    const voluto0 = cfg.scala === 'avatar' ? altezzaAvatar / 50 : 1 / e0.s; // unità di mondo per pixel dello sprite
+    const pp = passoPx.get(st.mossa);
+    const fatti = Math.hypot(fx - avPrec.x, fz - avPrec.z); // quanto si è mosso l'avatar da un fotogramma all'altro
+    if (allaDistanza && pp && fatti < 2) st.dist += st.muove ? fatti : 0;
+    st.t += dt;
+    // un passo = metà ciclo: 2 disegni nella camminata a 4, 4 in quelle a 8. Alla distanza: un disegno ogni (passo / disegni per passo) di terreno
+    const fase = allaDistanza && pp ? st.dist / (pp * voluto0 / (nf / 2)) : st.t * fps;
+    const n = st.muove ? 1 + (Math.floor(fase) % Math.max(1, nf)) : (nf === 4 ? 2 : 1); // da fermo: il disegno 2 della camminata a 4 (gambe unite), il 1 delle altre
+    if (!st.muove) st.dist = 0;
     const chiave = `${best}_${st.mossa}_${n}`;
     const e = elenco[chiave]; if (!e) return;
     mat.map = tex.get(chiave)!; mat.needsUpdate = false;
@@ -91,7 +116,8 @@ export async function avvia(cfg: Cfg) {
     vtmp.copy(pivot.position).applyMatrix4(cam.matrixWorldInverse);
     const ppu = RH / (2 * Math.tan((cam as THREE.PerspectiveCamera).fov * Math.PI / 360) * -vtmp.z); // pixel di gioco per unità di mondo, a quella distanza
     const voluto = cfg.scala === 'avatar' ? altezzaAvatar / 50 : 1 / e.s; // unità di mondo per pixel dello sprite, come lo si vorrebbe
-    const k = cfg.nitido === false ? 0 : Math.max(1, Math.round(voluto * ppu));
+    // default: scala CONTINUA (lo sprite alto sempre come il 3D, a ogni zoom). Con nitido=true (?nitido=1) la scala è a interi e a ogni zoom salta fra 1x, 2x...
+    const k = !cfg.nitido ? 0 : Math.max(1, Math.round(voluto * ppu));
     const u = k ? k / ppu : voluto;
     const W = e.w * u, H = e.h * u;
     const sx = specchio ? -1 : 1;
@@ -109,7 +135,8 @@ export async function avvia(cfg: Cfg) {
     }
     ombra.position.set(st.x, avObj.position.y + 0.03, st.z);
     info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
-    void box; void avPrec; avPrec = { x: av.x, z: av.z };
+    info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 / (nf / 2))).toFixed(1) : 0;
+    void box; avPrec = { x: fx, z: fz };
   }
   B.pre = (_s, c) => aggiorna(c);
   return {

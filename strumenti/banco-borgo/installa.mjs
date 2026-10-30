@@ -44,7 +44,7 @@ const CATTURA = `<script>
 </script>
 `;
 const CARICA = `<script type="module">
-/* carica lo sprite appena il gioco e' pronto: ?sprite=<personaggio> [&accanto=1 per vederlo vicino al 3D] [&scala=elenco] [&nitido=0] [&mossa=cammina|camminata|corsa] */
+/* carica lo sprite appena il gioco e' pronto: ?sprite=<personaggio> [&accanto=1 per vederlo vicino al 3D] [&scala=elenco] [&nitido=1] [&mossa=cammina|camminata|corsa] */
 const q = new URLSearchParams(location.search);
 const set = q.get('sprite');
 if (set) {
@@ -54,7 +54,7 @@ if (set) {
     try {
       const m = await import('/src/_banco_sprite.ts');
       const accanto = q.get('accanto') === '1';
-      window.__sp = await m.avvia({ set, dx: accanto ? -2.6 : 0, scala: q.get('scala') === 'elenco' ? 'elenco' : 'avatar', nascondi: !accanto, nitido: q.get('nitido') !== '0', mossa: q.get('mossa') || 'cammina' });
+      window.__sp = await m.avvia({ set, dx: accanto ? -2.6 : 0, scala: q.get('scala') === 'elenco' ? 'elenco' : 'avatar', nascondi: !accanto, nitido: q.get('nitido') === '1', mossa: q.get('mossa') || 'cammina' });
     } catch (e) { console.error('banco sprite', e); }
   }, 200);
 }
