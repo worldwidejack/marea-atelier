@@ -1,0 +1,13 @@
+{
+ "tipo": "personaggio a sprite",
+ "nome": "Il protagonista (Quest 1)",
+ "pronome": "he",
+ "descrizione": "messy dark hair, energetic dark eyes with thick eyebrows, confident half-smile, small scar across right cheek, big head about 45 % of height on a short cartoon body, light tan skin, unbuttoned cream-white short-sleeve shirt over a coral undershirt, rolled deep-teal shorts, brick-red sneakers with cream soles",
+ "carattere": "A spirited, naive young man of about 20 with a big heart and high energy, carrying a small cheek scar showing he has already survived tough adventures and knows how to manage.",
+ "testa": 45,
+ "modello": "design/protagonista_design.jpg",
+ "alto": 48,
+ "colori": 15,
+ "stato": "in lavorazione",
+ "nota": "Proposta di Riccardo per la Quest 1 (Gradino 2: il disegno). Ragazzo di 20 anni solare ed energico con cicatrice sulla guancia. Disegno candidato in design/protagonista_design.jpg."
+}

@@ -20,7 +20,7 @@ NOME = re.compile(r'^(?P<vista>[NSE]{1,3})_(?P<mossa>[a-z]+)_(?P<n>\d+)(?P<sopra
 def immagini(cartella):
     if not cartella.is_dir():
         return []
-    return sorted(str(f.relative_to(QUI)) for f in cartella.iterdir() if f.suffix.lower() in IMMAGINI)
+    return sorted(f.relative_to(QUI).as_posix() for f in cartella.iterdir() if f.suffix.lower() in IMMAGINI)
 
 
 def mosse(cartella):
@@ -37,12 +37,12 @@ def mosse(cartella):
             continue
         chiave = f.stem
         d = elenco.get(chiave, {})
-        disegno = {'src': str(f.relative_to(QUI)), 'n': int(m['n']), 'ax': d.get('ax'), 'ay': d.get('ay')}
+        disegno = {'src': f.relative_to(QUI).as_posix(), 'n': int(m['n']), 'ax': d.get('ax'), 'ay': d.get('ay')}
         if 'presa' in d:
             disegno.update(presa=d['presa'], ang=d.get('ang'), lungo=d.get('lungo'))
         sopra = cartella / f'{chiave}_sopra.png'
         if sopra.exists():
-            disegno['sopra'] = str(sopra.relative_to(QUI))
+            disegno['sopra'] = sopra.relative_to(QUI).as_posix()
         tutte.setdefault(m['mossa'], {}).setdefault(m['vista'], []).append(disegno)
     for viste in tutte.values():
         for disegni in viste.values():
@@ -70,7 +70,7 @@ def voce(cartella, categoria):
         'design': immagini(cartella / 'design') + [m for m in immagini(cartella / 'modello') if not m.endswith('.png')],
         'disegni': immagini(cartella / 'disegni'),
         'fogli': immagini(cartella / 'fogli'),
-        'modelli': sorted(str(f.relative_to(QUI)) for f in cartella.glob('*.glb')),
+        'modelli': sorted(f.relative_to(QUI).as_posix() for f in cartella.glob('*.glb')),
         'mosse': mosse(cartella / 'sprite'),
         'armi': mosse(cartella / 'armi'),
     }
@@ -89,7 +89,7 @@ def quest(f):
             testo.append(r.strip()); dentro = True
         elif dentro:
             break
-    return {'file': str(f.relative_to(QUI)), 'titolo': titolo, 'stato': campi.get('stato', 'aperta'), 'chi': campi.get('chi', ''), 'testo': ' '.join(testo)}
+    return {'file': f.relative_to(QUI).as_posix(), 'titolo': titolo, 'stato': campi.get('stato', 'aperta'), 'chi': campi.get('chi', ''), 'testo': ' '.join(testo)}
 
 
 def main():
