@@ -149,7 +149,7 @@
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N'];
 // le 16 direzioni del gioco: le 9 disegnate e le 7 del lato sinistro, che sono lo specchio
 const GIRO = [...VISTE.map((v) => [v, false]), ...VISTE.slice(1, 8).reverse().map((v) => [v, true])];
-const NOMI_MOSSE = { cammina: 'cammina', scatto: 'scatto', bevi: 'pozione', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
+const NOMI_MOSSE = { cammina: 'cammina', scatto: 'scatto', bevi: 'pozione', salta: 'salto', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
 const NOMI_STATO = { idea: 'idea', 'in lavorazione': 'in lavorazione', approvato: 'approvato', riferimento: 'riferimento' };
 const REPO = 'https://github.com/worldwidejack/marea-atelier/blob/main/';
 
