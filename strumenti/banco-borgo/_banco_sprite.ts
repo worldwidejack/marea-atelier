@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
-type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean };
+type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string };
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']; // 0°, 22.5° … 180° dalla camera (davanti → dietro passando da destra)
 
 export async function avvia(cfg: Cfg) {
@@ -38,7 +38,7 @@ export async function avvia(cfg: Cfg) {
   ombra.rotation.x = -Math.PI / 2; ombra.name = '_banco_sprite_ombra';
   B.scene.add(pivot, ombra);
 
-  const st = { x: cfg.x ?? 0, z: cfg.z ?? 0, facing: cfg.facing ?? 0, mossa: 'cammina', muove: false, mezzo: 0, t: 0, dist: 0 };
+  const st = { x: cfg.x ?? 0, z: cfg.z ?? 0, facing: cfg.facing ?? 0, mossa: cfg.mossa ?? 'cammina', muove: false, mezzo: 0, t: 0, dist: 0 };
   const av0 = G.state().avatar;
   const dx = cfg.dx ?? -2.6, dz = cfg.dz ?? 0; // scostamento in «schermo»: dx negativo = a sinistra dell'avatar (asse destra della camera)
   let avPrec = { x: av0.x, z: av0.z };
@@ -74,8 +74,8 @@ export async function avvia(cfg: Cfg) {
     for (const vi of viste) { const d = Math.abs(VISTE.indexOf(vi) * 22.5 - a); if (d < bd) { bd = d; best = vi; } }
     const specchio = ang < -1e-6 && best !== 'S' && best !== 'N';
     st.t += dt;
-    const nf = 4;
-    const n = st.muove ? 1 + (Math.floor(st.t * fps) % nf) : 2; // da fermo: il disegno 2 della camminata (gambe unite)
+    let nf = 0; while (elenco[`${best}_${st.mossa}_${nf + 1}`]) nf++; // i disegni che ci sono: 4 (cammina) o 8 (camminata, corsa)
+    const n = st.muove ? 1 + (Math.floor(st.t * fps) % Math.max(1, nf)) : (nf === 4 ? 2 : 1); // da fermo: il disegno 2 della camminata a 4 (gambe unite), il 1 delle altre
     const chiave = `${best}_${st.mossa}_${n}`;
     const e = elenco[chiave]; if (!e) return;
     mat.map = tex.get(chiave)!; mat.needsUpdate = false;
