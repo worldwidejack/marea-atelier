@@ -26,6 +26,20 @@
 - Una tavolozza piccola per personaggio, la stessa in tutte le viste (`sprite/tavolozza.json`, la tiene `pixel.py`). Colori di MAREA: la tabella dell'Art Bible, `marea/docs/ART_BIBLE.md` §2.
 - Fondo magenta pieno `#FF00FF` nei fogli: niente pavimento, ombre, scritte o griglie.
 
+## I personaggi: come si muovono (i 12 principi, in 4 disegni)
+Dai 12 principi dell'animazione di Disney (Thomas e Johnston, *The Illusion of Life*, 1981). Con 4 disegni a mossa non ci stanno tutti: questi sono quelli che si scrivono nella frase della mossa in `scheda.json` e che si guardano nel controllo.
+- **Anticipazione**: ogni mossa forte comincia al contrario. Accucciato prima dello scatto, mani all'anca prima dell'onda: è il disegno 1.
+- **Squash e stretch**: schiacciato e compatto, poi allungato e più sottile, poi palla, poi atterraggio. Il volume resta lo stesso: se si allunga, si stringe.
+- **Archi**: braccia, gambe, capriola e arma vanno su curve, mai su rette.
+- **Follow through e overlapping**: capelli e camicia arrivano dopo il corpo e si fermano dopo di lui, nel disegno 4.
+- **Pose to pose**: i disegni sono pose chiave. Si guarda prima il giro 1, e solo dopo si fa il resto.
+- **Slow in e slow out, timing**: con pochi disegni si decide coi tempi (in Fenaki, quanto sta fermo ogni disegno), non coi disegni in più. Lungo sull'anticipazione, veloce nell'azione.
+- **Solid drawing, niente gemelli**: sinistra e destra mai identiche (braccia e gambe a altezze diverse), volume e taglia uguali in tutte le viste.
+- **Staging**: la sagoma si legge a 48 px, con le braccia fuori dal busto e nessun dettaglio che si perde.
+- **Exaggeration e appeal**: un po' sopra la realtà ma riconoscibile (il sorriso, la cicatrice, i capelli), mai caricatura.
+- **Azione secondaria**: il braccio libero, i capelli, la boccetta.
+- **Nel controllo**: dove un disegno «scatta» (testa che salta, braccia nascoste, bastone che cambia lunghezza), si guarda il cambio con `momento` di Fenaki.
+
 ## I personaggi: come si chiede al generatore (lezioni pagate)
 - **Una vista per foglio**, 4 colonne × una riga per mossa, la camminata sempre nella prima riga (fa da metro per altezza e piedi). Al massimo 3 mosse per foglio.
 - **La cosa più importante va in testa al prompt.** La testa grande Codex l'ha rispettata solo quando la frase della testa era la prima.
