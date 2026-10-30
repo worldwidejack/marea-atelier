@@ -1,8 +1,9 @@
 """Porta gli sprite a 8 pose ai nomi di F3: passo1/passo2 -> camminata_1..8, corsa1/corsa2 -> corsa_1..8, e toglie le mezze mosse.
 
 pixel.py dà i nomi dai fogli (<vista>_passo1_<n>, <vista>_passo2_<n>, ...). Il banco e il motore di F3 leggono
-<vista>_camminata_<1-8> e <vista>_corsa_<1-8>: qui si fanno le copie e si aggiunge la voce in elenco.json.
 <vista>_camminata_<1-8> e <vista>_corsa_<1-8>: qui si copiano, si aggiunge la voce in elenco.json e si cancellano i passo1/2 e corsa1/2.
+Si rilancia dopo ogni pixel.py (che li rifà).
+Uso: python strumenti/nomi_8pose.py personaggi/<id>/sprite
 """
 import json
 import os
