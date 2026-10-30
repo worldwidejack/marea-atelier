@@ -6,15 +6,23 @@
  "carattere": "A spirited, naive young man of about 20 with a big heart and high energy, carrying a small cheek scar showing he has already survived tough adventures and knows how to manage.",
  "testa": 45,
  "modello": "design/protagonista_design.jpg",
- "alto": 48,
- "colori": 15,
- "stato": "in lavorazione",
- "nota": "Proposta di Riccardo per la Quest 1 (Gradino 2: il disegno). Ragazzo di 20 anni solare ed energico con cicatrice sulla guancia. Disegno candidato in design/protagonista_design.jpg.",
  "viste": {
   "S": "modello/vista_S.jpg",
   "SE": "modello/vista_SE.jpg",
   "E": "modello/vista_E.jpg",
   "NE": "modello/vista_NE.jpg",
   "N": "modello/vista_N.jpg"
- }
+ },
+ "stile": {
+  "SE": "../f3-prova/design/F3_foglio_pixel_SE.jpg",
+  "E": "../f3-prova/design/F3_foglio_pixel_E.jpg",
+  "NE": "../f3-prova/design/F3_foglio_pixel_NE.jpg"
+ },
+ "alto": 48,
+ "colori": 15,
+ "mosse": {
+  "cammina": "WALK CYCLE, 4 frames: right foot forward contact, passing pose with the legs together, left foot forward contact, passing pose with the legs together, arms swinging opposite to the legs (frame 2 is also the standing pose)"
+ },
+ "stato": "in lavorazione",
+ "nota": "Proposta di Riccardo per la Quest 1. Modello in 5 viste completato in modello/_FOGLIO_5_viste.jpg."
 }
