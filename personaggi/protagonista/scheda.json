@@ -9,5 +9,12 @@
  "alto": 48,
  "colori": 15,
  "stato": "in lavorazione",
- "nota": "Proposta di Riccardo per la Quest 1 (Gradino 2: il disegno). Ragazzo di 20 anni solare ed energico con cicatrice sulla guancia. Disegno candidato in design/protagonista_design.jpg."
+ "nota": "Proposta di Riccardo per la Quest 1 (Gradino 2: il disegno). Ragazzo di 20 anni solare ed energico con cicatrice sulla guancia. Disegno candidato in design/protagonista_design.jpg.",
+ "viste": {
+  "S": "modello/vista_S.jpg",
+  "SE": "modello/vista_SE.jpg",
+  "E": "modello/vista_E.jpg",
+  "NE": "modello/vista_NE.jpg",
+  "N": "modello/vista_N.jpg"
+ }
 }
