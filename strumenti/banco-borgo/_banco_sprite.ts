@@ -101,7 +101,9 @@ export async function avvia(cfg: Cfg) {
     const fase = allaDistanza && pp ? st.dist / (pp * voluto0 / (nf / 2)) : st.t * fps;
     const n = st.muove ? 1 + (Math.floor(fase) % Math.max(1, nf)) : (nf === 4 ? 2 : 1); // da fermo: il disegno 2 della camminata a 4 (gambe unite), il 1 delle altre
     if (!st.muove) st.dist = 0;
-    const chiave = `${best}_${st.mossa}_${n}`;
+    // da fermo nelle mosse a 8 pose: la posa ferma della camminata a 4 (disegno 2, gambe unite), se c'è; il disegno 1 è un contatto a gambe aperte
+    const fermo = !st.muove && nf === 8 && elenco[`${best}_cammina_2`] ? `${best}_cammina_2` : null;
+    const chiave = fermo ?? `${best}_${st.mossa}_${n}`;
     const e = elenco[chiave]; if (!e) return;
     mat.map = tex.get(chiave)!; mat.needsUpdate = false;
     // il quad guarda la camera (billboard sferico: i pixel restano quadrati sullo schermo), perno ai piedi

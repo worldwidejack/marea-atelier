@@ -1,0 +1,1946 @@
+{
+"ENE_cammina_1": {
+"w": 31,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_cammina_2": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_cammina_3": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_cammina_4": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_1": {
+"w": 33,
+"h": 49,
+"s": 19.2,
+"ax": 18,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_2": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_3": {
+"w": 29,
+"h": 49,
+"s": 19.2,
+"ax": 14,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_4": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_5": {
+"w": 33,
+"h": 49,
+"s": 19.2,
+"ax": 18,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_6": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_7": {
+"w": 29,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ENE_camminata_8": {
+"w": 31,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_cammina_1": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_cammina_2": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_cammina_3": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_cammina_4": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_1": {
+"w": 33,
+"h": 49,
+"s": 19.2,
+"ax": 18,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_2": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_3": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_4": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_5": {
+"w": 31,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_6": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_7": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"ESE_camminata_8": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_cammina_1": {
+"w": 31,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_cammina_2": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_cammina_3": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_cammina_4": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_1": {
+"w": 33,
+"h": 49,
+"s": 19.2,
+"ax": 18,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_2": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_3": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_4": {
+"w": 32,
+"h": 49,
+"s": 19.2,
+"ax": 17,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_5": {
+"w": 32,
+"h": 50,
+"s": 19.2,
+"ax": 17,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_6": {
+"w": 29,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_7": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"E_camminata_8": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_cammina_1": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_cammina_2": {
+"w": 27,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_cammina_3": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_cammina_4": {
+"w": 26,
+"h": 50,
+"s": 19.2,
+"ax": 13,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_1": {
+"w": 29,
+"h": 51,
+"s": 19.2,
+"ax": 16,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_2": {
+"w": 27,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_3": {
+"w": 27,
+"h": 51,
+"s": 19.2,
+"ax": 13,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_4": {
+"w": 30,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_5": {
+"w": 29,
+"h": 51,
+"s": 19.2,
+"ax": 14,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_6": {
+"w": 27,
+"h": 51,
+"s": 19.2,
+"ax": 13,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_7": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NE_camminata_8": {
+"w": 28,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_cammina_1": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_cammina_2": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_cammina_3": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_cammina_4": {
+"w": 27,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_1": {
+"w": 31,
+"h": 50,
+"s": 19.2,
+"ax": 17,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_2": {
+"w": 31,
+"h": 49,
+"s": 19.2,
+"ax": 18,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_3": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_4": {
+"w": 31,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_5": {
+"w": 29,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_6": {
+"w": 28,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_7": {
+"w": 28,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"NNE_camminata_8": {
+"w": 29,
+"h": 51,
+"s": 19.2,
+"ax": 14,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_cammina_1": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_cammina_2": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_cammina_3": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_cammina_4": {
+"w": 27,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_1": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_2": {
+"w": 28,
+"h": 49,
+"s": 19.2,
+"ax": 15,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_3": {
+"w": 27,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_4": {
+"w": 27,
+"h": 51,
+"s": 19.2,
+"ax": 14,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_5": {
+"w": 28,
+"h": 51,
+"s": 19.2,
+"ax": 14,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_6": {
+"w": 28,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_7": {
+"w": 28,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"N_camminata_8": {
+"w": 28,
+"h": 51,
+"s": 19.2,
+"ax": 15,
+"ay": 50,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_cammina_1": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_cammina_2": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_cammina_3": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_cammina_4": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 14,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_1": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 16,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_2": {
+"w": 30,
+"h": 46,
+"s": 19.2,
+"ax": 16,
+"ay": 45,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_3": {
+"w": 29,
+"h": 48,
+"s": 19.2,
+"ax": 14,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_4": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_5": {
+"w": 30,
+"h": 47,
+"s": 19.2,
+"ax": 15,
+"ay": 46,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_6": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 16,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_7": {
+"w": 30,
+"h": 47,
+"s": 19.2,
+"ax": 15,
+"ay": 46,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SE_camminata_8": {
+"w": 29,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_cammina_1": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_cammina_2": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_cammina_3": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_cammina_4": {
+"w": 29,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_1": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 16,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_2": {
+"w": 30,
+"h": 47,
+"s": 19.2,
+"ax": 15,
+"ay": 46,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_3": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_4": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_5": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_6": {
+"w": 31,
+"h": 48,
+"s": 19.2,
+"ax": 16,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_7": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"SSE_camminata_8": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_cammina_1": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_cammina_2": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_cammina_3": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_cammina_4": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 16,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_1": {
+"w": 31,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_2": {
+"w": 30,
+"h": 47,
+"s": 19.2,
+"ax": 15,
+"ay": 46,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_3": {
+"w": 30,
+"h": 49,
+"s": 19.2,
+"ax": 16,
+"ay": 48,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_4": {
+"w": 30,
+"h": 50,
+"s": 19.2,
+"ax": 15,
+"ay": 49,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_5": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 16,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_6": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_7": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+},
+"S_camminata_8": {
+"w": 30,
+"h": 48,
+"s": 19.2,
+"ax": 15,
+"ay": 47,
+"piede": [
+0.8,
+0.8
+],
+"scatola": [
+0.8,
+0.8,
+2.5
+],
+"modo": "piano",
+"avanti": 0.3
+}
+}

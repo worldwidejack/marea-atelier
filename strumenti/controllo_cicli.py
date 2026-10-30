@@ -22,6 +22,11 @@ elenco = json.load(open(os.path.join(cartella, 'elenco.json'), encoding='utf-8')
 VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']
 CICLI = (('cammina', 4, 2), ('camminata', 8, 4), ('corsa', 8, 4))   # nome, disegni, disegni per passo
 PELLE = [(0xDD, 0x9F, 0x6D), (0xFA, 0xB9, 0x79), (0xD1, 0x81, 0x5D)]
+# un personaggio con un'altra pelle: i colori chiari e caldi della sua tavolozza (sprite/tavolozza.json), oltre ai tre qui sopra
+_tav = os.path.join(cartella, 'tavolozza.json')
+if os.path.exists(_tav):
+    _cols = [tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for h in json.load(open(_tav, encoding='utf-8'))]
+    PELLE = PELLE + [c for c in _cols if c[0] >= 220 and 25 <= c[0] - c[1] <= 75 and 25 <= c[1] - c[2] <= 75 and c not in PELLE]
 
 
 def carica(nome):
@@ -42,7 +47,7 @@ def testa(nome):
     cx = float(np.nonzero(scuri(alto))[1].mean())
     pelle = np.zeros(alto.shape[:2], bool)
     for c in PELLE:
-        pelle |= (alto[..., :3] == np.array(c)).all(-1)
+        pelle |= np.abs(alto[..., :3].astype(int) - np.array(c)).max(-1) <= 3   # i PNG possono avere i colori della tavolozza ±1
     pelle &= alto[..., 3] > 0
     px = np.nonzero(pelle)[1]
     return cx, (float(px.mean()) if len(px) else float('nan'))

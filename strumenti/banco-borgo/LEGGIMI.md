@@ -26,6 +26,7 @@ Con il gioco acceso (`npm run dev`, porta 5173):
   - `&accanto=1` lo mette di fianco al 3D (senza, prende il posto del 3D);
   - `&scala=elenco` lo tiene alla grandezza con cui è stato disegnato (default: alto come l'avatar);
   - `&mossa=camminata` o `&mossa=corsa` usa le 8 pose invece dei 4 disegni di `cammina` (default);
+    i disegni avanzano con la distanza percorsa, non col tempo (il passo si misura sul profilo E: i piedi non scivolano); da fermo mostra `cammina_2`, le gambe unite, se c'è.
   - `&nitido=1` scala lo sprite a numeri interi per avere pixel tutti uguali, ma allora a ogni zoom la grandezza salta (1×, 2×…) e non resta uguale al 3D. Di default invece la scala è continua: alto sempre come il 3D a ogni zoom, con i pixel un po' sfumati (vedi sotto).
 - **Foto automatiche** (dalla cartella del gioco): `node _banco/scena.mjs <personaggio> <tel|largo> <accanto|furetto|giro> <elenco|avatar>`
   - `tel` = telefono, `largo` = finestra larga; `giro` fa il giro delle 8 viste; `furetto` lo porta vicino a un paesano.

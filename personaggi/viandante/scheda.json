@@ -1,0 +1,34 @@
+{
+ "tipo": "personaggio a sprite",
+ "nome": "Il viandante",
+ "pronome": "he",
+ "descrizione": "messy spiky chestnut-brown hair with pointed locks, warm brown eyes under thick angled eyebrows, a cocky confident smirk, a small reddish X-shaped scar on his forehead above his left eye, big head about 47 % of height on a short cartoon body, light peach skin, a loose olive-green tunic with a V-neck reaching below the hips, short sleeves with rolled pale grey-green cuffs, a brown leather belt with a small square silver buckle and a small brown leather pouch on his left hip, dark brown trousers, worn olive-brown leather boots",
+ "carattere": "A cheeky young wanderer of about 18, quick and sure of himself, with a forehead scar from an old adventure.",
+ "testa": 47,
+ "modello": "design/viandante_design.jpg",
+ "viste": {
+  "S": "modello/vista_S.jpg",
+  "SE": "modello/vista_SE.jpg",
+  "E": "modello/vista_E.jpg",
+  "NE": "modello/vista_NE.jpg",
+  "N": "modello/vista_N.jpg"
+ },
+ "stile": {
+  "SE": "../protagonista/fogli/SE_cammina-passo1-passo2.png",
+  "E": "../protagonista/fogli/E_cammina-passo1-passo2.png",
+  "NE": "../protagonista/fogli/NE_cammina-passo1-passo2.png"
+ },
+ "alto": 48,
+ "colori": 16,
+ "stato": "in lavorazione",
+ "nota": "Personaggio nuovo di Riccardo (30/10/2026), dal suo disegno davanti/dietro in T-pose (design/viandante_originale.jpg). Camminata a 8 pose (camminata_1-8) in 9 viste, piu la camminata a 4 (cammina_1-4) per la posa ferma: 108 sprite, 48 px, 19 colori. Provato nel Borgo col banco (?sprite=viandante&mossa=camminata). Da approvare.",
+ "mosse": {
+  "cammina": "WALK CYCLE, 4 frames: right foot forward contact, passing pose with the legs together, left foot forward contact, passing pose with the legs together, arms swinging opposite to the legs (frame 2 is also the standing pose)",
+  "passo1": "PROFESSIONAL WALK CYCLE, FIRST STEP, 4 frames that continue into the next row, a relaxed natural walk with a clear up-and-down bounce: 1) CONTACT: the RIGHT leg reaches forward straight with only the HEEL touching the ground and the toes lifted, the other leg straight behind pushing on its toes, the legs at their widest, the arm opposite to the front leg swung forward and the other arm swung back; 2) DOWN, the LOWEST pose: the front foot now flat on the ground taking the weight with that knee bent, the whole body and the head about 2 pixels LOWER than in frame 1, the back foot peeling off the ground, the arms at their widest swing; 3) PASSING: the supporting leg straight under the body, the other leg bent at the knee with its foot lifted and passing beside the supporting ankle, the arms passing close to the body; 4) UP, the HIGHEST pose: rising on the toes of the supporting leg, now a little behind, the body and the head about 2 pixels HIGHER than in frame 1, the free leg swinging forward and reaching out for the next step, the arms swinging the other way. ARMS, very important: a BIG clearly readable arm swing opposite to the legs, both arms always visible OUTSIDE the torso silhouette and never hidden behind the body, the forward hand well in front of the body and the back hand well behind it at the widest poses (in front and back views the two hands show at the two sides of the body, one swung forward and up, the other swung back), the arms passing beside the hips in the passing pose, the arm positions changing smoothly from frame to frame",
+  "passo2": "PROFESSIONAL WALK CYCLE, SECOND STEP: the same 4 poses as the row above with the legs and the arms swapped, 4 frames, after frame 4 the cycle loops back to frame 1 of the row above, a relaxed natural walk with a clear up-and-down bounce: 1) CONTACT: now the LEFT leg reaches forward straight with only the HEEL touching the ground and the toes lifted, the other leg straight behind pushing on its toes, the legs at their widest, the arm opposite to the front leg swung forward and the other arm swung back; 2) DOWN, the LOWEST pose: the front foot now flat on the ground taking the weight with that knee bent, the whole body and the head about 2 pixels LOWER than in frame 1, the back foot peeling off the ground, the arms at their widest swing; 3) PASSING: the supporting leg straight under the body, the other leg bent at the knee with its foot lifted and passing beside the supporting ankle, the arms passing close to the body; 4) UP, the HIGHEST pose: rising on the toes of the supporting leg, now a little behind, the body and the head about 2 pixels HIGHER than in frame 1, the free leg swinging forward and reaching out for the next step, the arms swinging the other way. ARMS, very important: a BIG clearly readable arm swing opposite to the legs, both arms always visible OUTSIDE the torso silhouette and never hidden behind the body, the forward hand well in front of the body and the back hand well behind it at the widest poses (in front and back views the two hands show at the two sides of the body, one swung forward and up, the other swung back), the arms passing beside the hips in the passing pose, the arm positions changing smoothly from frame to frame IMPORTANT: this second step is NOT a mirror image of the row above. The whole body, the head and the face keep EXACTLY the same orientation toward the camera as in the row above (the same side of the head, the same cheek and the same ear stay visible in every frame of every row, the character never turns his head or shoulders to the other side); only which leg and which arm is forward changes."
+ },
+ "extra": [
+  "#969666",
+  "#74744C"
+ ]
+}
