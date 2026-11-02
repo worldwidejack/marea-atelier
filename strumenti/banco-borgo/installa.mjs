@@ -2,7 +2,7 @@
 // Uso:  node strumenti/banco-borgo/installa.mjs <cartella-del-gioco> [personaggio ...]
 //   senza personaggi: mette tutti quelli dell'Atelier che hanno sprite/elenco.json.
 // Non tocca nessun file del gioco: aggiunge _banco/, apps/client/_banco.html (fatta da index.html),
-// apps/client/src/_banco_sprite.ts e apps/client/public/_banco_sprite/<personaggio>/, e li esclude da git.
+// apps/client/src/_banco_*.ts (lo sprite e le armi nel dungeon) e apps/client/public/_banco_sprite/<personaggio>/, e li esclude da git.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -22,7 +22,7 @@ if (!fs.existsSync(indexHtml) || !fs.existsSync(path.join(G, 'tests', 'lib', 'br
 
 // 1. gli script del banco e il modulo che disegna lo sprite
 fs.cpSync(path.join(QUI, 'banco'), path.join(G, '_banco'), { recursive: true });
-fs.copyFileSync(path.join(QUI, '_banco_sprite.ts'), path.join(client, 'src', '_banco_sprite.ts'));
+for (const f of fs.readdirSync(QUI).filter((f) => /^_banco_.*\.ts$/.test(f))) fs.copyFileSync(path.join(QUI, f), path.join(client, 'src', f));
 
 // 2. _banco.html = index.html del gioco + due blocchi (cattura di scena/camera in testa, caricamento dello sprite in coda)
 const CATTURA = `<script>
@@ -85,7 +85,7 @@ for (const id of ids) {
 // 4. fuori da git (anche nelle worktree: git sa dov'è il suo exclude)
 try {
   const ex = path.resolve(G, execFileSync('git', ['-C', G, 'rev-parse', '--git-path', 'info/exclude'], { encoding: 'utf8' }).trim());
-  const voci = ['/_banco/', '/apps/client/_banco.html', '/apps/client/src/_banco_sprite.ts', '/apps/client/public/_banco_sprite/'];
+  const voci = ['/_banco/', '/apps/client/_banco.html', '/apps/client/src/_banco_*.ts', '/apps/client/public/_banco_sprite/'];
   const ora = fs.existsSync(ex) ? fs.readFileSync(ex, 'utf8') : '';
   const nuove = voci.filter((v) => !ora.split(/\r?\n/).includes(v));
   if (nuove.length) fs.appendFileSync(ex, (ora && !ora.endsWith('\n') ? '\n' : '') + nuove.join('\n') + '\n');

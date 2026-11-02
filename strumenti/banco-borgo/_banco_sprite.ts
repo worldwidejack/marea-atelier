@@ -2,13 +2,15 @@
 // Si carica da Playwright con import('/src/_banco_sprite.ts'); scena e camera arrivano da window.__banco (_banco/lib.mjs).
 // Legge sprite/elenco.json di pixel.py: <vista>_<mossa>_<n> con w,h,ax,ay (ancora = i piedi), s = pixel per unità di mondo.
 import * as THREE from 'three';
+import { armaDi, creaBottoni, creaColpo, eroe, MOSSE, tingi } from './_banco_armi.ts';
+import type { Arma } from './_banco_armi.ts';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
 type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string; distanza?: boolean };
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']; // 0°, 22.5° … 180° dalla camera (davanti → dietro passando da destra)
 
 export async function avvia(cfg: Cfg) {
-  const B = (window as unknown as { __banco: { scene: THREE.Scene; camera: THREE.PerspectiveCamera; pre?: (s: THREE.Scene, c: THREE.Camera) => void } }).__banco;
+  const B = (window as unknown as { __banco: { scene: THREE.Scene; camera: THREE.PerspectiveCamera; renderer: THREE.WebGLRenderer; pre?: (s: THREE.Scene, c: THREE.Camera) => void } }).__banco;
   const G = (window as unknown as { __game: { state: () => { avatar: { x: number; z: number; yaw: number; vx: number; vz: number } }; test: { teleport?: (x: number, z: number) => void } } }).__game;
   const base = `/_banco_sprite/${cfg.set}/`;
   const elenco: Record<string, Voce> = await (await fetch(base + 'elenco.json')).json();
@@ -17,7 +19,7 @@ export async function avvia(cfg: Cfg) {
   const tex = new Map<string, THREE.Texture>();
   await Promise.all(chiavi.map(async (k) => {
     const img = new Image(); img.src = base + k + '.png'; await img.decode();
-    const t = new THREE.Texture(img);
+    const t = new THREE.Texture(tingi(img, k.split('_')[1]!)); // il ciano delle armi a strati diventa un segnaposto
     t.magFilter = THREE.NearestFilter; t.minFilter = cfg.nitido ? THREE.NearestFilter : THREE.LinearMipmapLinearFilter; t.generateMipmaps = !cfg.nitido; t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; // a scala continua i pixel si rimpiccioliscono: il mipmap li sfuma invece di saltarli
     tex.set(k, t);
   }));
@@ -101,29 +103,48 @@ export async function avvia(cfg: Cfg) {
   (btnB?.parentElement ?? document.body).appendChild(bottone);
   if (!visteScatto.length) bottone.style.display = 'none';
 
-  function aggiorna(cam: THREE.Camera) {
+  // DUNGEON DELLE ARMI: nel dungeon di prova lo sprite prende il posto dell'eroe 3D (e della sua arma) e mostra l'arma in mano:
+  // camminata con l'arma (MOSSE.porta) e il colpo della sim a pose chiave (MOSSE.colpo). Vedi _banco_armi.ts.
+  const haArma = (a: Arma) => chiavi.some((k) => k.split('_')[1] === MOSSE[a].colpo) && chiavi.some((k) => k.split('_')[1] === MOSSE[a].porta);
+  const bottoni = creaBottoni(haArma);
+  const colpo = creaColpo();
+
+  function aggiorna(scena: THREE.Scene, cam: THREE.Camera) {
     if (!(cam as THREE.PerspectiveCamera).isPerspectiveCamera) return;
-    if (cfg.nascondi) avObj.visible = false; // lo sprite prende il posto del 3D (il gioco puo' riaccenderlo: lo spengo a ogni fotogramma)
+    // nel dungeon il gioco disegna un'altra scena (dungeon_<id>): lo sprite ci passa dentro e segue l'eroe del dungeon
+    const dun = scena.name.startsWith('dungeon_') ? scena : null;
+    if (!dun && scena !== B.scene) return; // altre scene (anteprime): non sono il mondo
+    const h = dun ? eroe() : null;
+    const eroe3d = dun ? dun.children.find((c) => c.name === 'avatar') : avObj;
+    if (dun && (!h || !eroe3d)) return;
+    const qui = dun ?? B.scene;
+    if (pivot.parent !== qui) qui.add(pivot, ombra);
+    bottoni.aggiorna(!!dun, h ? armaDi(h.arma) : null);
+    bottone.style.display = dun || !visteScatto.length ? 'none' : 'flex'; // ROTOLA solo nel Borgo
+    if (dun) { eroe3d!.visible = false; for (const c of dun.children) if (c.name.startsWith('arm_')) c.visible = false; } // via l'eroe 3D e la sua arma
+    else if (cfg.nascondi) avObj.visible = false; // lo sprite prende il posto del 3D (il gioco puo' riaccenderlo: lo spengo a ogni fotogramma)
     const now = performance.now(); const dt = Math.min(0.1, (now - ultimo) / 1000); ultimo = now;
-    if (now - ultimoPoll > 90) { av = G.state().avatar; ultimoPoll = now; }
+    if (!dun && now - ultimoPoll > 90) { av = G.state().avatar; ultimoPoll = now; }
     // camera: direzione dal personaggio alla camera sul piano
     const cp = cam.position;
     // posizione: segue l'avatar con uno scostamento sull'asse destra della camera (e uno avanti/indietro)
-    const fx = avObj.position.x, fz = avObj.position.z;
+    const fx = eroe3d!.position.x, fz = eroe3d!.position.z;
     let tcx = cp.x - fx, tcz = cp.z - fz; const L = Math.hypot(tcx, tcz) || 1; tcx /= L; tcz /= L;
     const rx = tcz, rz = -tcx; // destra schermo = (−f.z, f.x) con f = −toCam
     // (f = (-tcx,-tcz) → (−f.z, f.x) = (tcz, −tcx))
-    if (cfg.segui !== false) { st.x = fx + rx * dx - tcx * dz; st.z = fz + rz * dx - tcz * dz; }
+    if (dun) { st.x = fx; st.z = fz; } // nel dungeon al posto dell'eroe, non accanto
+    else if (cfg.segui !== false) { st.x = fx + rx * dx - tcx * dz; st.z = fz + rz * dx - tcz * dz; }
     // movimento e direzione: quella dell'avatar (avanti = (sin yaw, −cos yaw))
-    const v = Math.hypot(av.vx, av.vz);
-    st.muove = v > 0.2;
-    if (cfg.segui !== false) st.facing = Math.atan2(Math.sin(av.yaw), -Math.cos(av.yaw)); // angolo di «avanti» sul piano
-    const vx = Math.sin(av.yaw), vz = -Math.cos(av.yaw);
+    st.muove = h ? h.anim === 'cammina' || h.anim === 'corre' : Math.hypot(av.vx, av.vz) > 0.2;
+    const fl = h ? Math.hypot(h.fx, h.fz) || 1 : 1;
+    const vx = h ? h.fx / fl : Math.sin(av.yaw), vz = h ? h.fz / fl : -Math.cos(av.yaw); // avanti: la sim del dungeon (fx, fz) o l'avatar del Borgo (yaw)
+    if (cfg.segui !== false) st.facing = Math.atan2(vx, vz); // angolo di «avanti» sul piano
     // angolo fra il davanti del personaggio e la direzione verso la camera: 0 = guarda la camera, + = verso destra schermo
     const ang = Math.atan2(vx * rx + vz * rz, vx * tcx + vz * tcz) * 180 / Math.PI;
     const a = Math.abs(ang);
     // la capriola: a che punto è (0..1, −1 = niente) e dove sta l'avatar; parte piano, va forte nel tuffo e nella palla, frena rialzandosi
     let rp = -1;
+    if (rotola && dun) rotola = null; // nel dungeon niente capriola del banco (il teleport muove l'avatar del Borgo)
     if (rotola) {
       rp = (now - rotola.t0) / 1000 / scatto.durata;
       if (rp >= 1) { rotola = null; rp = -1; } else {
@@ -131,14 +152,18 @@ export async function avvia(cfg: Cfg) {
         G.test.teleport!(rotola.x0 + rotola.dx * rotola.l * s, rotola.z0 + rotola.dz * rotola.l * s);
       }
     }
-    // la vista disegnata più vicina fra quelle che ci sono (a scatti di 22,5°)
+    // nel dungeon, con un'arma in mano: il colpo (se la sim sta colpendo o tendendo) o la camminata con l'arma
+    const arma = h ? armaDi(h.arma) : null;
+    const c = h && arma && haArma(arma) ? colpo(h, arma, now) : null;
+    const mossa = rp >= 0 ? 'scatto' : c ? c.mossa : arma && haArma(arma) && !h!.magia ? MOSSE[arma].porta : st.mossa;
+    // la vista disegnata più vicina fra quelle che ci sono per quella mossa (a scatti di 22,5°)
     let best = viste[0]!, bd = 1e9;
-    for (const vi of rp >= 0 ? visteScatto : viste) { const d = Math.abs(VISTE.indexOf(vi) * 22.5 - a); if (d < bd) { bd = d; best = vi; } }
+    for (const vi of viste) { if (!elenco[`${vi}_${mossa}_1`]) continue; const d = Math.abs(VISTE.indexOf(vi) * 22.5 - a); if (d < bd) { bd = d; best = vi; } }
     const specchio = ang < -1e-6 && best !== 'S' && best !== 'N';
-    let nf = 0; while (elenco[`${best}_${st.mossa}_${nf + 1}`]) nf++; // i disegni che ci sono: 4 (cammina) o 8 (camminata, corsa)
-    const e0 = elenco[`${best}_${st.mossa}_1`]; if (!e0) return;
+    let nf = 0; while (elenco[`${best}_${mossa}_${nf + 1}`]) nf++; // i disegni che ci sono: 4 (cammina) o 8 (camminata, corsa)
+    const e0 = elenco[`${best}_${mossa}_1`]; if (!e0) return;
     const voluto0 = cfg.scala === 'avatar' ? altezzaAvatar / 50 : 1 / e0.s; // unità di mondo per pixel dello sprite
-    const pp = passoPx.get(st.mossa);
+    const pp = passoPx.get(mossa);
     const fatti = Math.hypot(fx - avPrec.x, fz - avPrec.z); // quanto si è mosso l'avatar da un fotogramma all'altro
     if (allaDistanza && pp && fatti < 2) st.dist += st.muove ? fatti : 0;
     st.t += dt;
@@ -148,12 +173,12 @@ export async function avvia(cfg: Cfg) {
     if (!st.muove) st.dist = 0;
     // da fermo nelle mosse a 8 pose: la posa ferma della camminata a 4 (disegno 2, gambe unite), se c'è; il disegno 1 è un contatto a gambe aperte
     const fermo = !st.muove && nf === 8 && elenco[`${best}_cammina_2`] ? `${best}_cammina_2` : null;
-    const chiave = rp >= 0 ? `${best}_scatto_${1 + scatto.soglie.filter((x) => rp >= x).length}` : fermo ?? `${best}_${st.mossa}_${n}`;
+    const chiave = rp >= 0 ? `${best}_scatto_${1 + scatto.soglie.filter((x) => rp >= x).length}` : c ? `${best}_${c.mossa}_${c.n}` : fermo ?? `${best}_${mossa}_${n}`;
     const e = elenco[chiave]; if (!e) return;
     mat.map = tex.get(chiave)!; mat.needsUpdate = false;
     // il quad guarda la camera (billboard sferico: i pixel restano quadrati sullo schermo), perno ai piedi
     cam.updateMatrixWorld();
-    pivot.position.set(st.x, avObj.position.y, st.z);
+    pivot.position.set(st.x, eroe3d!.position.y, st.z);
     pivot.quaternion.copy(cam.quaternion);
     // NITIDO: il gioco disegna a mezza risoluzione (1 pixel di gioco = 2 del tuo schermo). Uno sprite alto come il 3D occupa meno pixel
     // di gioco di quanti ne ha (48), e con la texture «nearest» il campionamento ne salta qualcuno: pixel di larghezza diversa, immagine sgranata.
@@ -180,14 +205,14 @@ export async function avvia(cfg: Cfg) {
       vtmp.set(xa / RW * 2 - 1, 1 - ya / RH * 2, vtmp.z).unproject(cam);
       pivot.position.copy(vtmp);
     }
-    ombra.position.set(st.x, avObj.position.y + 0.03, st.z);
-    info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
+    ombra.position.set(st.x, eroe3d!.position.y + 0.03, st.z);
+    info.dungeon = dun?.name ?? null; info.arma = arma; info.anim = h?.anim ?? null; info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
     info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 / (nf / 2))).toFixed(1) : 0;
     void box; avPrec = { x: fx, z: fz };
   }
-  B.pre = (_s, c) => aggiorna(c);
+  B.pre = (s, c) => aggiorna(s, c);
   return {
-    info, st, elenco, scatto, scatta, rimuovi() { B.pre = undefined; B.scene.remove(pivot, ombra); removeEventListener('keydown', tasto); bottone.remove(); },
+    info, st, elenco, scatto, scatta, rimuovi() { B.pre = undefined; pivot.removeFromParent(); ombra.removeFromParent(); removeEventListener('keydown', tasto); bottone.remove(); bottoni.rimuovi(); },
     metti(p: { x?: number; z?: number; facing?: number; mossa?: string; segui?: boolean }) { if (p.x !== undefined) st.x = p.x; if (p.z !== undefined) st.z = p.z; if (p.facing !== undefined) st.facing = p.facing; if (p.mossa) st.mossa = p.mossa; if (p.segui !== undefined) cfg.segui = p.segui; },
   };
 }
