@@ -2,10 +2,18 @@
  "tipo": "personaggio a sprite",
  "nome": "Lo scugnizzo del molo",
  "pronome": "he",
+ "descrizione": "wild spiky jet-black hair bursting out in big pointed tufts above a deep petrol-teal bandana tied around the forehead with two long tails flying behind his head, big bright dark eyes under thick angled eyebrows, a huge open toothy grin, a small beige plaster across the bridge of his nose, big head about 45 % of height on a short cartoon body, light tan sun-kissed skin, a sleeveless burnt-orange canvas vest worn open on his bare chest, a worn cream canvas satchel with a petrol-teal patch and a wooden toggle hanging on his left hip from a rope-beige strap across his chest from the right shoulder, rolled-up knee-length petrol-teal trousers held up by a thick knotted rope belt with hanging ends, cream cloth wraps around both wrists, barefoot",
  "carattere": "A cheeky, cheerful harbour street-kid of about 17 who grew up on the docks of a Ligurian fishing village: reckless, generous, always grinning, climbs and swims like a monkey.",
- "descrizione": "",
- "testa": 43,
+ "testa": 45,
+ "modello": "design/scugnizzo_design.jpg",
  "alto": 48,
- "stato": "idea",
- "nota": "Personaggio di Alberto (birbasan) col suo Claude, nato il 02/11/2026. Lo spirito è quello di Rufy di One Piece senza copiarlo (un copricapo che lo fa riconoscere, pochi colori forti, vestiti aperti, sorrisone), con un po' di Goku bambino (capelli a punte, ingenuo e forte). Direzione scelta: lo scugnizzo del molo (bandana con le code al vento, scalzo, cima da ormeggio come cintura), arancio e petrolio. Gradino 0: tre varianti del disegno A/B/C con F3 come metro; si sceglie, poi descrizione in inglese, modello in 5 viste e sprite. Nome segnaposto."
+ "stato": "in lavorazione",
+ "nota": "Personaggio di Alberto (birbasan) col suo Claude, nato il 02/11/2026. Lo spirito è quello di Rufy di One Piece senza copiarlo (un copricapo che lo fa riconoscere, pochi colori forti, vestiti aperti, sorrisone), con un po' di Goku bambino (capelli a punte, ingenuo e forte). Direzione scelta: lo scugnizzo del molo (bandana con le code al vento, scalzo, cima da ormeggio come cintura), arancio e petrolio. Gradino 0: tre varianti A/B/C con F3 come metro, scelta la A (02/11); poi la A con l'accessorio, scelta la A2 con la borsa a tracolla (design/scugnizzo_design.jpg). Il bastone resta un'idea per l'arma in mano (armi a strati). Gradino 1: modello in 5 viste. Nome segnaposto.",
+ "viste": {
+  "S": "modello/vista_S.jpg",
+  "SE": "modello/vista_SE.jpg",
+  "E": "modello/vista_E.jpg",
+  "NE": "modello/vista_NE.jpg",
+  "N": "modello/vista_N.jpg"
+ }
 }
