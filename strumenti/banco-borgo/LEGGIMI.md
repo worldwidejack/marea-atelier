@@ -27,11 +27,13 @@ Con il gioco acceso (`npm run dev`, porta 5173):
   - `&scala=elenco` lo tiene alla grandezza con cui è stato disegnato (default: alto come l'avatar);
   - `&mossa=camminata` o `&mossa=corsa` usa le 8 pose invece dei 4 disegni di `cammina` (default);
     i disegni avanzano con la distanza percorsa, non col tempo (il passo si misura sul profilo E: i piedi non scivolano); da fermo mostra `cammina_2`, le gambe unite, se c'è.
+  - **scatto** (capriola): se il personaggio ha `<vista>_scatto_1-4`, **R** sulla tastiera o il bottone **ROTOLA** (al posto di B, spento nel mondo) lo fa rotolare 3 m avanti in 0,55 s: i 4 disegni a tempo, l'avatar spostato col gancio `teleport` del gioco (serve `?test=1`), più corto se un raggio trova un muro o una siepe. Tempi e metri in `window.__sp.scatto`.
   - `&nitido=1` scala lo sprite a numeri interi per avere pixel tutti uguali, ma allora a ogni zoom la grandezza salta (1×, 2×…) e non resta uguale al 3D. Di default invece la scala è continua: alto sempre come il 3D a ogni zoom, con i pixel un po' sfumati (vedi sotto).
 - **Foto automatiche** (dalla cartella del gioco): `node _banco/scena.mjs <personaggio> <tel|largo> <accanto|furetto|giro> <elenco|avatar>`
   - `tel` = telefono, `largo` = finestra larga; `giro` fa il giro delle 8 viste; `furetto` lo porta vicino a un paesano.
   - Le immagini escono in `tests/out/banco-sprite/`. `python _banco/fogli.py <personaggio>` le mette in fogli A/B (serve Pillow).
   - `node _banco/nitidezza.mjs <personaggio>` confronta con e senza la correzione dei pixel.
+  - `node _banco/scatto.mjs <personaggio> [tel|largo]` fa rotolare il personaggio in 4 direzioni e col bottone, fotografa i disegni e dice quanti metri ha fatto (`PORTA=5195` se il gioco non è sulla 5173).
 
 Il personaggio è il nome della cartella in `personaggi/` (ora: `f3-prova` = gli sprite di Jack della prova, `protagonista` = la quest in corso). Gli sprite devono essere quelli di `pixel.py`: `<vista>_<mossa>_<n>.png` + `elenco.json` con `w, h, ax, ay` (ancora = i piedi) e `s` (pixel per unità di mondo).
 

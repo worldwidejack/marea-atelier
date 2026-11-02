@@ -9,7 +9,7 @@ const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']; // 0°, 2
 
 export async function avvia(cfg: Cfg) {
   const B = (window as unknown as { __banco: { scene: THREE.Scene; camera: THREE.PerspectiveCamera; pre?: (s: THREE.Scene, c: THREE.Camera) => void } }).__banco;
-  const G = (window as unknown as { __game: { state: () => { avatar: { x: number; z: number; yaw: number; vx: number; vz: number } } } }).__game;
+  const G = (window as unknown as { __game: { state: () => { avatar: { x: number; z: number; yaw: number; vx: number; vz: number } }; test: { teleport?: (x: number, z: number) => void } } }).__game;
   const base = `/_banco_sprite/${cfg.set}/`;
   const elenco: Record<string, Voce> = await (await fetch(base + 'elenco.json')).json();
   const chiavi = Object.keys(elenco);
@@ -65,6 +65,42 @@ export async function avvia(cfg: Cfg) {
   const sz = new THREE.Vector2(), vtmp = new THREE.Vector3();
   let ultimo = performance.now();
 
+  // SCATTO (capriola alla Dark Souls): R, o il bottone ROTOLA al posto di B (nel mondo B è spento). I disegni <vista>_scatto_1-4
+  // vanno a tempo e l'avatar va avanti col gancio teleport del gioco (?test=1); un raggio verso i muri accorcia la capriola.
+  const scatto = { durata: 0.55, metri: 3, soglie: [0.2, 0.42, 0.72] }; // disegno 1 piega, 2 tuffo, 3 palla, 4 si rialza
+  const visteScatto = viste.filter((v) => elenco[`${v}_scatto_1`]);
+  let rotola: { t0: number; x0: number; z0: number; dx: number; dz: number; l: number } | null = null;
+  const raggio = new THREE.Raycaster();
+  const nostri = new Set<THREE.Object3D>([avObj, pivot, ombra]);
+  function libero(x: number, z: number, dx: number, dz: number, l: number) {
+    raggio.set(new THREE.Vector3(x, avObj.position.y + 0.5, z), new THREE.Vector3(dx, 0, dz)); raggio.far = l + 0.45; raggio.camera = B.camera;
+    let colpi: THREE.Intersection[] = [];
+    try { colpi = raggio.intersectObjects(B.scene.children.filter((o) => !nostri.has(o)), true); } catch { return l; } // un oggetto strano del gioco non ferma la capriola
+    for (const h of colpi) {
+      if (!(h.object as THREE.Mesh).isMesh) continue; // scritte e icone (Sprite), linee e punti non sono muri
+      let o: THREE.Object3D | null = h.object, visto = true;
+      while (o) { if (!o.visible) { visto = false; break; } o = o.parent; }
+      if (visto) return Math.max(0, h.distance - 0.45);
+    }
+    return l;
+  }
+  function scatta() {
+    if (rotola || !visteScatto.length || !G.test.teleport) return false;
+    const a = G.state().avatar, dx = Math.sin(a.yaw), dz = -Math.cos(a.yaw);
+    rotola = { t0: performance.now(), x0: a.x, z0: a.z, dx, dz, l: libero(a.x, a.z, dx, dz, scatto.metri) };
+    return true;
+  }
+  const tasto = (e: KeyboardEvent) => { if (e.code === 'KeyR' && !e.repeat && !e.metaKey && !e.ctrlKey) scatta(); };
+  addEventListener('keydown', tasto);
+  const btnB = document.getElementById('btnB');
+  const bottone = document.createElement('div');
+  bottone.id = '_banco_rotola'; bottone.textContent = 'ROTOLA';
+  bottone.style.cssText = (btnB?.style.cssText ?? 'position:absolute;right:104px;bottom:40px;width:56px;height:56px;border-radius:50%;background:#2a7f9e;color:#fff;display:flex;align-items:center;justify-content:center;')
+    .replace(/display:\s*none;?/g, '') + 'display:flex;align-items:center;justify-content:center;font-size:12px;letter-spacing:0;z-index:5;'; // B spento ha solo display:none: il flex va rimesso
+  bottone.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); scatta(); });
+  (btnB?.parentElement ?? document.body).appendChild(bottone);
+  if (!visteScatto.length) bottone.style.display = 'none';
+
   function aggiorna(cam: THREE.Camera) {
     if (!(cam as THREE.PerspectiveCamera).isPerspectiveCamera) return;
     if (cfg.nascondi) avObj.visible = false; // lo sprite prende il posto del 3D (il gioco puo' riaccenderlo: lo spengo a ogni fotogramma)
@@ -86,9 +122,18 @@ export async function avvia(cfg: Cfg) {
     // angolo fra il davanti del personaggio e la direzione verso la camera: 0 = guarda la camera, + = verso destra schermo
     const ang = Math.atan2(vx * rx + vz * rz, vx * tcx + vz * tcz) * 180 / Math.PI;
     const a = Math.abs(ang);
+    // la capriola: a che punto è (0..1, −1 = niente) e dove sta l'avatar; parte piano, va forte nel tuffo e nella palla, frena rialzandosi
+    let rp = -1;
+    if (rotola) {
+      rp = (now - rotola.t0) / 1000 / scatto.durata;
+      if (rp >= 1) { rotola = null; rp = -1; } else {
+        const q = Math.min(1, Math.max(0, (rp - 0.1) / 0.75)), s = q * q * (3 - 2 * q);
+        G.test.teleport!(rotola.x0 + rotola.dx * rotola.l * s, rotola.z0 + rotola.dz * rotola.l * s);
+      }
+    }
     // la vista disegnata più vicina fra quelle che ci sono (a scatti di 22,5°)
     let best = viste[0]!, bd = 1e9;
-    for (const vi of viste) { const d = Math.abs(VISTE.indexOf(vi) * 22.5 - a); if (d < bd) { bd = d; best = vi; } }
+    for (const vi of rp >= 0 ? visteScatto : viste) { const d = Math.abs(VISTE.indexOf(vi) * 22.5 - a); if (d < bd) { bd = d; best = vi; } }
     const specchio = ang < -1e-6 && best !== 'S' && best !== 'N';
     let nf = 0; while (elenco[`${best}_${st.mossa}_${nf + 1}`]) nf++; // i disegni che ci sono: 4 (cammina) o 8 (camminata, corsa)
     const e0 = elenco[`${best}_${st.mossa}_1`]; if (!e0) return;
@@ -103,7 +148,7 @@ export async function avvia(cfg: Cfg) {
     if (!st.muove) st.dist = 0;
     // da fermo nelle mosse a 8 pose: la posa ferma della camminata a 4 (disegno 2, gambe unite), se c'è; il disegno 1 è un contatto a gambe aperte
     const fermo = !st.muove && nf === 8 && elenco[`${best}_cammina_2`] ? `${best}_cammina_2` : null;
-    const chiave = fermo ?? `${best}_${st.mossa}_${n}`;
+    const chiave = rp >= 0 ? `${best}_scatto_${1 + scatto.soglie.filter((x) => rp >= x).length}` : fermo ?? `${best}_${st.mossa}_${n}`;
     const e = elenco[chiave]; if (!e) return;
     mat.map = tex.get(chiave)!; mat.needsUpdate = false;
     // il quad guarda la camera (billboard sferico: i pixel restano quadrati sullo schermo), perno ai piedi
@@ -136,13 +181,13 @@ export async function avvia(cfg: Cfg) {
       pivot.position.copy(vtmp);
     }
     ombra.position.set(st.x, avObj.position.y + 0.03, st.z);
-    info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
+    info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
     info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 / (nf / 2))).toFixed(1) : 0;
     void box; avPrec = { x: fx, z: fz };
   }
   B.pre = (_s, c) => aggiorna(c);
   return {
-    info, st, elenco, rimuovi() { B.pre = undefined; B.scene.remove(pivot, ombra); },
+    info, st, elenco, scatto, scatta, rimuovi() { B.pre = undefined; B.scene.remove(pivot, ombra); removeEventListener('keydown', tasto); bottone.remove(); },
     metti(p: { x?: number; z?: number; facing?: number; mossa?: string; segui?: boolean }) { if (p.x !== undefined) st.x = p.x; if (p.z !== undefined) st.z = p.z; if (p.facing !== undefined) st.facing = p.facing; if (p.mossa) st.mossa = p.mossa; if (p.segui !== undefined) cfg.segui = p.segui; },
   };
 }
