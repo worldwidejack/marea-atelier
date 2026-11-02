@@ -1,0 +1,11 @@
+{
+ "tipo": "personaggio a sprite",
+ "nome": "Lo scugnizzo del molo",
+ "pronome": "he",
+ "carattere": "A cheeky, cheerful harbour street-kid of about 17 who grew up on the docks of a Ligurian fishing village: reckless, generous, always grinning, climbs and swims like a monkey.",
+ "descrizione": "",
+ "testa": 43,
+ "alto": 48,
+ "stato": "idea",
+ "nota": "Personaggio di Alberto (birbasan) col suo Claude, nato il 02/11/2026. Lo spirito è quello di Rufy di One Piece senza copiarlo (un copricapo che lo fa riconoscere, pochi colori forti, vestiti aperti, sorrisone), con un po' di Goku bambino (capelli a punte, ingenuo e forte). Direzione scelta: lo scugnizzo del molo (bandana con le code al vento, scalzo, cima da ormeggio come cintura), arancio e petrolio. Gradino 0: tre varianti del disegno A/B/C con F3 come metro; si sceglie, poi descrizione in inglese, modello in 5 viste e sprite. Nome segnaposto."
+}
