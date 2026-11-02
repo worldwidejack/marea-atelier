@@ -8,7 +8,7 @@ import { ascoltaA, creaLancio, magiaDi } from './_banco_magie.ts';
 import type { Magia } from './_banco_magie.ts';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
-type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string; distanza?: boolean };
+type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string; lento?: number; distanza?: boolean };
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']; // 0°, 22.5° … 180° dalla camera (davanti → dietro passando da destra)
 
 export async function avvia(cfg: Cfg) {
@@ -60,6 +60,7 @@ export async function avvia(cfg: Cfg) {
     if (largo && unito) passoPx.set(m, Math.max(4, largo - unito));
   }
   const allaDistanza = cfg.distanza !== false;
+  const lento = cfg.lento ?? 2.5; // quanto è più lungo il terreno per disegno rispetto al passo misurato: a 1 le gambe vanno troppo veloci (il passo misurato è corto per la corsa dell'avatar)
   const av0 = G.state().avatar;
   const dx = cfg.dx ?? -2.6, dz = cfg.dz ?? 0; // scostamento in «schermo»: dx negativo = a sinistra dell'avatar (asse destra della camera)
   let avPrec = { x: av0.x, z: av0.z };
@@ -173,7 +174,7 @@ export async function avvia(cfg: Cfg) {
     if (allaDistanza && pp && fatti < 2) st.dist += st.muove ? fatti : 0;
     st.t += dt;
     // un passo = metà ciclo: 2 disegni nella camminata a 4, 4 in quelle a 8. Alla distanza: un disegno ogni (passo / disegni per passo) di terreno
-    const fase = allaDistanza && pp ? st.dist / (pp * voluto0 / (nf / 2)) : st.t * fps;
+    const fase = allaDistanza && pp ? st.dist / (pp * voluto0 * lento / (nf / 2)) : st.t * fps;
     const n = st.muove ? 1 + (Math.floor(fase) % Math.max(1, nf)) : (nf === 4 ? 2 : 1); // da fermo: il disegno 2 della camminata a 4 (gambe unite), il 1 delle altre
     if (!st.muove) st.dist = 0;
     // da fermo nelle mosse a 8 pose: la posa ferma della camminata a 4 (disegno 2, gambe unite), se c'è; il disegno 1 è un contatto a gambe aperte
@@ -212,7 +213,7 @@ export async function avvia(cfg: Cfg) {
     }
     ombra.position.set(st.x, eroe3d!.position.y + 0.03, st.z);
     info.dungeon = dun?.name ?? null; info.arma = arma; info.magia = h ? magiaDi(h.magia) : null; info.anim = h?.anim ?? null; info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
-    info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 / (nf / 2))).toFixed(1) : 0;
+    info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 * lento / (nf / 2))).toFixed(1) : 0;
     void box; avPrec = { x: fx, z: fz };
   }
   B.pre = (s, c) => aggiorna(s, c);
