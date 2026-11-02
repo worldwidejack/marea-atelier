@@ -57,7 +57,9 @@ export async function avvia(cfg: Cfg) {
   for (const m of new Set(chiavi.map((k) => k.split('_')[1]!))) {
     const nf = chiavi.filter((k) => k.startsWith(`E_${m}_`)).length;
     const largo = larghezzaPiedi(`E_${m}_1`), unito = larghezzaPiedi(`E_${m}_${nf === 8 ? 3 : 2}`);
-    if (largo && unito) passoPx.set(m, Math.max(4, largo - unito));
+    // le mosse con l'arma in mano (leggera, arco) hanno il disegno 2 a piedi larghi come il 1: il passo misurato viene 5-7 px e le gambe volano. Le porto al passo della pesante (16 px), che va bene.
+    const minimo = nf === 4 && m !== 'cammina' ? 16 : 4;
+    if (largo && unito) passoPx.set(m, Math.max(minimo, largo - unito));
   }
   const allaDistanza = cfg.distanza !== false;
   const lento = cfg.lento ?? 2.5; // quanto è più lungo il terreno per disegno rispetto al passo misurato: a 1 le gambe vanno troppo veloci (il passo misurato è corto per la corsa dell'avatar)
