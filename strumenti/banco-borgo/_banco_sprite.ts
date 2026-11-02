@@ -4,6 +4,8 @@
 import * as THREE from 'three';
 import { armaDi, creaBottoni, creaColpo, eroe, MOSSE, tingi } from './_banco_armi.ts';
 import type { Arma } from './_banco_armi.ts';
+import { ascoltaA, creaLancio, magiaDi } from './_banco_magie.ts';
+import type { Magia } from './_banco_magie.ts';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
 type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string; distanza?: boolean };
@@ -105,9 +107,11 @@ export async function avvia(cfg: Cfg) {
 
   // DUNGEON DELLE ARMI: nel dungeon di prova lo sprite prende il posto dell'eroe 3D (e della sua arma) e mostra l'arma in mano:
   // camminata con l'arma (MOSSE.porta) e il colpo della sim a pose chiave (MOSSE.colpo). Vedi _banco_armi.ts.
+  // Con una magia in mano (missile, flusso, bomba) i disegni di _banco_magie.ts: mira, lancio, raggio acceso, rilascio.
   const haArma = (a: Arma) => chiavi.some((k) => k.split('_')[1] === MOSSE[a].colpo) && chiavi.some((k) => k.split('_')[1] === MOSSE[a].porta);
-  const bottoni = creaBottoni(haArma);
-  const colpo = creaColpo();
+  const haMagia = (m: Magia) => [1, 2, 3, 4].every((n) => chiavi.some((k) => k.endsWith(`_${m}_${n}`)));
+  const bottoni = creaBottoni(haArma, haMagia);
+  const colpo = creaColpo(), lancio = creaLancio(), manoA = ascoltaA();
 
   function aggiorna(scena: THREE.Scene, cam: THREE.Camera) {
     if (!(cam as THREE.PerspectiveCamera).isPerspectiveCamera) return;
@@ -119,7 +123,7 @@ export async function avvia(cfg: Cfg) {
     if (dun && (!h || !eroe3d)) return;
     const qui = dun ?? B.scene;
     if (pivot.parent !== qui) qui.add(pivot, ombra);
-    bottoni.aggiorna(!!dun, h ? armaDi(h.arma) : null);
+    bottoni.aggiorna(!!dun, h && !h.magia ? armaDi(h.arma) : null, h ? magiaDi(h.magia) : null);
     bottone.style.display = dun || !visteScatto.length ? 'none' : 'flex'; // ROTOLA solo nel Borgo
     if (dun) { eroe3d!.visible = false; for (const c of dun.children) if (c.name.startsWith('arm_')) c.visible = false; } // via l'eroe 3D e la sua arma
     else if (cfg.nascondi) avObj.visible = false; // lo sprite prende il posto del 3D (il gioco puo' riaccenderlo: lo spengo a ogni fotogramma)
@@ -154,7 +158,8 @@ export async function avvia(cfg: Cfg) {
     }
     // nel dungeon, con un'arma in mano: il colpo (se la sim sta colpendo o tendendo) o la camminata con l'arma
     const arma = h ? armaDi(h.arma) : null;
-    const c = h && arma && haArma(arma) ? colpo(h, arma, now) : null;
+    const cm = h && h.magia ? lancio(h, now, manoA.giu()) : null; // la magia in mano: mira, lancio, raggio
+    const c = cm && haMagia(cm.mossa) ? cm : h && arma && haArma(arma) ? colpo(h, arma, now) : null;
     const mossa = rp >= 0 ? 'scatto' : c ? c.mossa : arma && haArma(arma) && !h!.magia ? MOSSE[arma].porta : st.mossa;
     // la vista disegnata più vicina fra quelle che ci sono per quella mossa (a scatti di 22,5°)
     let best = viste[0]!, bd = 1e9;
@@ -206,13 +211,13 @@ export async function avvia(cfg: Cfg) {
       pivot.position.copy(vtmp);
     }
     ombra.position.set(st.x, eroe3d!.position.y + 0.03, st.z);
-    info.dungeon = dun?.name ?? null; info.arma = arma; info.anim = h?.anim ?? null; info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
+    info.dungeon = dun?.name ?? null; info.arma = arma; info.magia = h ? magiaDi(h.magia) : null; info.anim = h?.anim ?? null; info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
     info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 / (nf / 2))).toFixed(1) : 0;
     void box; avPrec = { x: fx, z: fz };
   }
   B.pre = (s, c) => aggiorna(s, c);
   return {
-    info, st, elenco, scatto, scatta, rimuovi() { B.pre = undefined; pivot.removeFromParent(); ombra.removeFromParent(); removeEventListener('keydown', tasto); bottone.remove(); bottoni.rimuovi(); },
+    info, st, elenco, scatto, scatta, rimuovi() { B.pre = undefined; pivot.removeFromParent(); ombra.removeFromParent(); removeEventListener('keydown', tasto); bottone.remove(); bottoni.rimuovi(); manoA.rimuovi(); },
     metti(p: { x?: number; z?: number; facing?: number; mossa?: string; segui?: boolean }) { if (p.x !== undefined) st.x = p.x; if (p.z !== undefined) st.z = p.z; if (p.facing !== undefined) st.facing = p.facing; if (p.mossa) st.mossa = p.mossa; if (p.segui !== undefined) cfg.segui = p.segui; },
   };
 }

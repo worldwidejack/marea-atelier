@@ -3,10 +3,13 @@
 // L'arma vera la decide la sim. L'eroe del dungeon senza server non può cambiarla dallo zaino (la sim lo vieta senza personaggio salvato),
 // quindi i bottoni del banco la mettono nell'equipaggiamento di partenza e, se sei già giù, risalgono e riscendono da soli.
 // Il bastone di ciano dei disegni diventa un segnaposto del colore dell'arma (?ciano=1 lo lascia ciano). Lo usa _banco_sprite.ts.
+// Stessa meccanica per le magie (_banco_magie.ts): una seconda fila di bottoni Missile · Flusso · Bomba mette in mano la magia (equip.mano) e risale/riscende.
 import { RPG } from '@marea/content/rpg.ts';
 import { hasItem, itemDef } from '@marea/sim/rpg/items.ts';
 import { dungeonLink } from './game/ingressi.ts';
 import { PAL } from './ui/style.ts';
+import { INCANTO, MAGIE, NOME, magiaDi } from './_banco_magie.ts';
+import type { Magia } from './_banco_magie.ts';
 
 export type Arma = 'leggera' | 'pesante' | 'arco';
 /** Per ogni arma: la camminata con l'arma in mano (fa anche da posa ferma, disegno 2) e il colpo. */
@@ -26,11 +29,13 @@ export function armaDi(id: string | null | undefined): Arma | null {
 /** Secondi di un colpo con quell'arma (velocita = colpi al secondo); la durata vera la misura `colpo` dopo il primo. */
 const tempoDi = (id: string) => { const v = Number((itemDef(id) as { velocita?: number }).velocita) || 1; return 1 / v; };
 
-/** Prima di scendere: l'arma scelta in mano e le tre nello zaino (newHero copia RPG.partenza quando si scende). */
-function preparaZaino(a: Arma): void {
-  const P = (RPG as unknown as { partenza: { inv: Record<string, number>; equip: Record<string, string> } }).partenza;
+/** Prima di scendere: l'arma (o la magia) scelta in mano e le tre armi e le tre magie nello zaino (newHero copia RPG.partenza quando si scende). */
+type Scelta = { arma: Arma } | { magia: Magia };
+function preparaZaino(c: Scelta): void {
+  const P = (RPG as unknown as { partenza: { inv: Record<string, number>; equip: Record<string, string>; magie: string[] } }).partenza;
   for (const id of Object.values(PROVA)) if (hasItem(id) && !P.inv[id]) P.inv[id] = 1;
-  P.equip.arma = PROVA[a];
+  for (const id of Object.values(INCANTO)) if (!P.magie.includes(id)) P.magie.push(id);
+  if ('arma' in c) { P.equip.arma = PROVA[c.arma]; delete P.equip.mano; } else { P.equip.magia = INCANTO[c.magia]; P.equip.mano = 'magia'; }
 }
 const aspetta = async (ok: () => boolean, ms = 15000) => { const t = performance.now(); while (!ok() && performance.now() - t < ms) await new Promise((r) => setTimeout(r, 150)); return ok(); };
 /** Risale dal dungeon come dal menu di pausa (Esc → Esci dal dungeon → Sì). */
@@ -90,51 +95,65 @@ export function creaColpo() {
   };
 }
 
-/** Bottoni del banco: DUNGEON nel Borgo (scende nella Grotta, eroe nuovo), LEGGERA / PESANTE / ARCO nel dungeon (e il tasto V che le gira). */
-export function creaBottoni(haMosse: (a: Arma) => boolean) {
+/** Bottoni del banco: DUNGEON nel Borgo (scende nella Grotta, eroe nuovo), LEGGERA / PESANTE / ARCO e MISSILE / FLUSSO / BOMBA nel dungeon (e i tasti V e M che le girano). */
+export function creaBottoni(haMosse: (a: Arma) => boolean, haMagia: (m: Magia) => boolean) {
   const G = (window as unknown as { __game: { test: { enterDungeon?: (id: string) => boolean } } }).__game;
   const css = 'position:absolute;z-index:30;font:bold 13px system-ui,sans-serif;color:#fff;border:3px solid ' + PAL.neroCaldo + ';border-radius:10px;padding:0 10px;height:40px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;';
   const scendi = document.createElement('div');
   scendi.id = '_banco_dungeon'; scendi.textContent = 'Dungeon delle armi';
   scendi.style.cssText = css + `left:12px;bottom:calc(env(safe-area-inset-bottom) + 200px);background:${PAL.viola};`;
-  let scelta: Arma = 'leggera', occupato = false;
-  /** Scende con l'arma `a` (se sei già giù, prima risale): l'eroe nuovo del dungeon parte con quella in mano. */
-  const vai = async (a: Arma) => {
+  let scelta: Scelta = { arma: 'leggera' }, occupato = false;
+  /** Scende con l'arma o la magia `c` (se sei già giù, prima risale): l'eroe nuovo del dungeon parte con quella in mano. */
+  const vai = async (c: Scelta) => {
     if (occupato) return;
-    occupato = true; scelta = a; preparaZaino(a);
+    occupato = true; scelta = c; preparaZaino(c);
     try {
       if (dungeonLink.state) { risali(); await aspetta(() => !dungeonLink.state); }
       await aspetta(() => !!G.test.enterDungeon?.('grotta'));
     } finally { occupato = false; }
   };
   scendi.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); void vai(scelta); });
-  const fila = document.createElement('div');
-  fila.id = '_banco_armi';
-  fila.style.cssText = 'position:absolute;z-index:30;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + 132px);display:none;gap:6px;'; // sotto l'HUD del dungeon (vita, magia, stamina)
-  const armi = (Object.keys(MOSSE) as Arma[]).filter(haMosse);
-  const b = new Map<Arma, HTMLDivElement>();
-  const metti = (a: Arma) => { if (armaDi(eroe()?.arma) !== a) void vai(a); };
-  for (const a of armi) {
+  const fila = (id: string, alto: number) => {
+    const f = document.createElement('div');
+    f.id = id;
+    f.style.cssText = `position:absolute;z-index:30;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top) + ${alto}px);display:none;gap:6px;`; // sotto l'HUD del dungeon (vita, magia, stamina)
+    return f;
+  };
+  const filaArmi = fila('_banco_armi', 132), filaMagie = fila('_banco_magie', 178);
+  const armi = (Object.keys(MOSSE) as Arma[]).filter(haMosse), magie = MAGIE.filter(haMagia);
+  const b = new Map<Arma, HTMLDivElement>(), bm = new Map<Magia, HTMLDivElement>();
+  const bottone = (testo: string, c: Scelta, dove: HTMLElement) => {
     const el = document.createElement('div');
-    el.textContent = a === 'leggera' ? 'Leggera' : a === 'pesante' ? 'Pesante' : 'Arco';
-    el.style.cssText = css + 'position:static;';
-    el.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); metti(a); });
-    b.set(a, el); fila.appendChild(el);
-  }
-  document.body.append(scendi, fila);
+    el.textContent = testo; el.style.cssText = css + 'position:static;';
+    el.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); metti(c); });
+    dove.appendChild(el);
+    return el;
+  };
+  /** Se non ce l'hai già in mano, risale e riscende con quella. */
+  const metti = (c: Scelta) => {
+    const h = eroe();
+    const gia = 'arma' in c ? !h?.magia && armaDi(h?.arma) === c.arma : h?.magia === INCANTO[c.magia];
+    if (!gia) void vai(c);
+  };
+  for (const a of armi) b.set(a, bottone(a === 'leggera' ? 'Leggera' : a === 'pesante' ? 'Pesante' : 'Arco', { arma: a }, filaArmi));
+  for (const m of magie) bm.set(m, bottone(NOME[m], { magia: m }, filaMagie));
+  document.body.append(scendi, filaArmi, filaMagie);
   const tasto = (e: KeyboardEvent) => {
-    if (e.code !== 'KeyV' || e.repeat || !eroe() || !armi.length) return;
-    const ora = armaDi(eroe()!.arma), i = ora ? armi.indexOf(ora) : -1;
-    metti(armi[(i + 1) % armi.length]!);
+    const h = eroe();
+    if ((e.code !== 'KeyV' && e.code !== 'KeyM') || e.repeat || !h) return;
+    if (e.code === 'KeyV' && armi.length) { const ora = armaDi(h.arma), i = ora ? armi.indexOf(ora) : -1; metti({ arma: armi[(i + 1) % armi.length]! }); }
+    if (e.code === 'KeyM' && magie.length) { const ora = h.magia ? magiaDi(h.magia) : null, i = ora ? magie.indexOf(ora) : -1; metti({ magia: magie[(i + 1) % magie.length]! }); }
   };
   addEventListener('keydown', tasto);
   return {
-    /** A ogni fotogramma: nel dungeon i bottoni delle armi (quella in mano accesa), fuori il bottone per scendere. */
-    aggiorna(dentro: boolean, arma: Arma | null) {
-      scendi.style.display = dentro || !armi.length ? 'none' : 'flex';
-      fila.style.display = dentro ? 'flex' : 'none';
+    /** A ogni fotogramma: nel dungeon i bottoni delle armi e delle magie (quella in mano accesa), fuori il bottone per scendere. */
+    aggiorna(dentro: boolean, arma: Arma | null, magia: Magia | null) {
+      scendi.style.display = dentro || !(armi.length || magie.length) ? 'none' : 'flex';
+      filaArmi.style.display = dentro && armi.length ? 'flex' : 'none';
+      filaMagie.style.display = dentro && magie.length ? 'flex' : 'none';
       for (const [a, el] of b) el.style.background = a === arma ? PAL.erbaChiara : PAL.legnoScuro;
+      for (const [m, el] of bm) el.style.background = m === magia ? PAL.erbaChiara : PAL.legnoScuro;
     },
-    rimuovi() { scendi.remove(); fila.remove(); removeEventListener('keydown', tasto); },
+    rimuovi() { scendi.remove(); filaArmi.remove(); filaMagie.remove(); removeEventListener('keydown', tasto); },
   };
 }
