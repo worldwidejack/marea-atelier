@@ -28,6 +28,7 @@ subprocess.run([PY, os.path.join(SPRITE, 'pixel.py'), tmp], check=True)
 
 el_tmp = json.load(open(os.path.join(tmp, 'sprite', 'elenco.json'), encoding='utf-8'))
 el = json.load(open(os.path.join(cart, 'sprite', 'elenco.json'), encoding='utf-8'))
+CAPELLI = json.load(open(os.path.join(cart, 'scheda.json'), encoding='utf-8')).get('capelli') or CAPELLI  # scheda.json «capelli»: i colori dei capelli di quel personaggio
 cap = np.array([[int(h[i:i + 2], 16) for i in (1, 3, 5)] for h in CAPELLI])
 
 

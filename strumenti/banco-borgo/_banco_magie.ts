@@ -10,8 +10,9 @@ import type { Eroe } from './_banco_armi.ts';
 export type Magia = 'missile' | 'flusso' | 'bomba';
 export const MAGIE: Magia[] = ['missile', 'flusso', 'bomba'];
 /** La magia che i bottoni del banco mettono in mano per ogni forma (l'eroe nuovo del dungeon ha solo la fiammata). */
-export const INCANTO: Record<Magia, string> = { missile: 'fiammata', flusso: 'fuoco_continuo', bomba: 'bomba_fuoco' };
-export const NOME: Record<Magia, string> = { missile: 'Missile', flusso: 'Flusso', bomba: 'Bomba' };
+// &incanto=<id di spells.json> cambia la magia del missile (es. &incanto=fulmine, il Proiettile elettrico)
+export const INCANTO: Record<Magia, string> = { missile: new URLSearchParams(location.search).get('incanto') || 'fiammata', flusso: 'fuoco_continuo', bomba: 'bomba_fuoco' };
+export const NOME: Record<Magia, string> = { missile: INCANTO.missile === 'fulmine' ? 'Fulmine' : 'Missile', flusso: 'Flusso', bomba: 'Bomba' };
 
 /** La forma di una magia: raggio → flusso, bomba → bomba, tutto il resto (proiettile, evocazione) → il gesto del missile. */
 export function magiaDi(id: string | null | undefined): Magia | null {

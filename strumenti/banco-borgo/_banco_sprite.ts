@@ -4,7 +4,8 @@
 import * as THREE from 'three';
 import { armaDi, creaBottoni, creaColpo, eroe, MOSSE, tingi } from './_banco_armi.ts';
 import type { Arma } from './_banco_armi.ts';
-import { ascoltaA, creaLancio, magiaDi } from './_banco_magie.ts';
+import { ascoltaA, creaLancio, INCANTO, magiaDi } from './_banco_magie.ts';
+import { creaFulmine } from './_banco_fulmine.ts';
 import type { Magia } from './_banco_magie.ts';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
@@ -115,6 +116,8 @@ export async function avvia(cfg: Cfg) {
   const haMagia = (m: Magia) => [1, 2, 3, 4].every((n) => chiavi.some((k) => k.endsWith(`_${m}_${n}`)));
   const bottoni = creaBottoni(haArma, haMagia);
   const colpo = creaColpo(), lancio = creaLancio(), manoA = ascoltaA();
+  const fulmine = INCANTO.missile === 'fulmine' ? creaFulmine(B.scene) : null;
+  let fulmineVia = false;
 
   function aggiorna(scena: THREE.Scene, cam: THREE.Camera) {
     if (!(cam as THREE.PerspectiveCamera).isPerspectiveCamera) return;
@@ -126,6 +129,7 @@ export async function avvia(cfg: Cfg) {
     if (dun && (!h || !eroe3d)) return;
     const qui = dun ?? B.scene;
     if (pivot.parent !== qui) qui.add(pivot, ombra);
+    if (fulmine && fulmine.gruppo.parent !== qui) qui.add(fulmine.gruppo);
     bottoni.aggiorna(!!dun, h && !h.magia ? armaDi(h.arma) : null, h ? magiaDi(h.magia) : null);
     bottone.style.display = dun || !visteScatto.length ? 'none' : 'flex'; // ROTOLA solo nel Borgo
     if (dun) { eroe3d!.visible = false; for (const c of dun.children) if (c.name.startsWith('arm_')) c.visible = false; } // via l'eroe 3D e la sua arma
@@ -163,6 +167,12 @@ export async function avvia(cfg: Cfg) {
     const arma = h ? armaDi(h.arma) : null;
     const cm = h && h.magia ? lancio(h, now, manoA.giu()) : null; // la magia in mano: mira, lancio, raggio
     const c = cm && haMagia(cm.mossa) ? cm : h && arma && haArma(arma) ? colpo(h, arma, now) : null;
+    if (fulmine && h) { // &incanto=fulmine: il fulmine del banco sopra al proiettile del gioco
+      const lancia = cm && cm.mossa === 'missile' && cm.n === 2;
+      if (lancia && !fulmineVia) fulmine.spara(st.x, eroe3d!.position.y, st.z, h.fx, h.fz, now / 1000);
+      fulmineVia = !!(cm && cm.n >= 2);
+      fulmine.aggiorna(now / 1000, cm && cm.mossa === 'missile' && cm.n === 1 ? { x: st.x, y: eroe3d!.position.y, z: st.z, fx: h.fx, fz: h.fz } : null);
+    }
     const mossa = rp >= 0 ? 'scatto' : c ? c.mossa : arma && haArma(arma) && !h!.magia ? MOSSE[arma].porta : st.mossa;
     // la vista disegnata più vicina fra quelle che ci sono per quella mossa (a scatti di 22,5°)
     let best = viste[0]!, bd = 1e9;
