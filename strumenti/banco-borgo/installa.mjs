@@ -24,6 +24,16 @@ if (!fs.existsSync(indexHtml) || !fs.existsSync(path.join(G, 'tests', 'lib', 'br
 fs.cpSync(path.join(QUI, 'banco'), path.join(G, '_banco'), { recursive: true });
 for (const f of fs.readdirSync(QUI).filter((f) => /^_banco_.*\.ts$/.test(f))) fs.copyFileSync(path.join(QUI, f), path.join(client, 'src', f));
 
+// Entrata separata: solo il banco riceve il controllo, il gioco resta intatto.
+const main = fs.readFileSync(path.join(client, 'src', 'main.ts'), 'utf8');
+const aggancio = '  const renderer = createRenderer({ canvas, flags: FLAGS });';
+const scenaImport = "'./render/scene.ts'";
+const scena = fs.readFileSync(path.join(client, 'src', 'render', 'scene.ts'), 'utf8');
+const condizioneHd = 'nitido !== null && !bassa';
+if (!main.includes(aggancio) || !main.includes(scenaImport) || !scena.includes(condizioneHd)) throw new Error('il renderer è cambiato: aggiornare l’aggancio del banco');
+fs.writeFileSync(path.join(client, 'src', 'render', '_banco_scene.ts'), scena.replace(condizioneHd, 'nitido !== null'));
+fs.writeFileSync(path.join(client, 'src', '_banco_main.ts'), "import { controlloRisoluzione } from './_banco_risoluzione.ts';\n" + main.replace(scenaImport, "'./render/_banco_scene.ts'").replace(aggancio, aggancio + '\n  controlloRisoluzione(renderer);'));
+
 // 2. _banco.html = index.html del gioco + due blocchi (cattura di scena/camera in testa, caricamento dello sprite in coda)
 const CATTURA = `<script>
 /* BANCO SPRITE (usa-e-getta): three avvisa __THREE_DEVTOOLS__ a ogni Scene/Renderer: cosi' prendo scena e camera senza toccare il gioco */
@@ -65,6 +75,8 @@ const crlf = html.includes('\r\n');
 html = html.replace(/\r\n/g, '\n');
 if (!/<head>/.test(html) || !/<\/body>/.test(html)) { console.error('index.html non ha <head> e </body> come mi aspetto: il gioco è cambiato, aggiornare installa.mjs'); process.exit(1); }
 html = html.replace('<head>\n', '<head>\n' + CATTURA).replace('</body>', CARICA + '</body>');
+if (!html.includes('/src/main.ts')) throw new Error('index.html è cambiato: manca /src/main.ts');
+html = html.replace('/src/main.ts', '/src/_banco_main.ts');
 if (crlf) html = html.replace(/\n/g, '\r\n');
 fs.writeFileSync(path.join(client, '_banco.html'), html);
 
@@ -85,7 +97,7 @@ for (const id of ids) {
 // 4. fuori da git (anche nelle worktree: git sa dov'è il suo exclude)
 try {
   const ex = path.resolve(G, execFileSync('git', ['-C', G, 'rev-parse', '--git-path', 'info/exclude'], { encoding: 'utf8' }).trim());
-  const voci = ['/_banco/', '/apps/client/_banco.html', '/apps/client/src/_banco_*.ts', '/apps/client/public/_banco_sprite/'];
+  const voci = ['/_banco/', '/apps/client/_banco.html', '/apps/client/src/_banco_*.ts', '/apps/client/src/render/_banco_scene.ts', '/apps/client/public/_banco_sprite/'];
   const ora = fs.existsSync(ex) ? fs.readFileSync(ex, 'utf8') : '';
   const nuove = voci.filter((v) => !ora.split(/\r?\n/).includes(v));
   if (nuove.length) fs.appendFileSync(ex, (ora && !ora.endsWith('\n') ? '\n' : '') + nuove.join('\n') + '\n');

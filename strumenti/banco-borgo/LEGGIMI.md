@@ -22,6 +22,7 @@ Mette nel gioco `_banco/` (gli script), `apps/client/_banco.html` (il gioco con 
 
 ## Provarlo
 Con il gioco acceso (`npm run dev`, porta 5173):
+- **Risoluzione**: il pulsante «Risoluzione: retro» passa dalla resa a mezza risoluzione del gioco alla risoluzione piena dello schermo e viceversa. Per aggiungerlo a un banco già installato, aggiorna l'Atelier e ripeti `installa.mjs`.
 - **A mano**: `http://localhost:5173/_banco.html?test=1&net=0&slot=0&sprite=<personaggio>`
   - `&accanto=1` lo mette di fianco al 3D (senza, prende il posto del 3D);
   - `&scala=elenco` lo tiene alla grandezza con cui è stato disegnato (default: alto come l'avatar);
