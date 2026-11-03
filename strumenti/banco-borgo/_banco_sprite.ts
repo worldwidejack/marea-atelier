@@ -6,10 +6,11 @@ import { armaDi, creaBottoni, creaColpo, eroe, MOSSE, tingi } from './_banco_arm
 import type { Arma } from './_banco_armi.ts';
 import { ascoltaA, creaLancio, INCANTO, magiaDi } from './_banco_magie.ts';
 import { creaFulmine } from './_banco_fulmine.ts';
+import { creaHd, texturaHd } from './_banco_hd.ts';
 import type { Magia } from './_banco_magie.ts';
 
 type Voce = { w: number; h: number; ax: number; ay: number; s: number };
-type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; mossa?: string; lento?: number; distanza?: boolean };
+type Cfg = { set: string; dx?: number; dz?: number; scala?: 'elenco' | 'avatar'; fps?: number; segui?: boolean; x?: number; z?: number; facing?: number; nascondi?: boolean; nitido?: boolean; hd?: boolean; mossa?: string; lento?: number; distanza?: boolean };
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N']; // 0°, 22.5° … 180° dalla camera (davanti → dietro passando da destra)
 
 export async function avvia(cfg: Cfg) {
@@ -19,10 +20,14 @@ export async function avvia(cfg: Cfg) {
   const elenco: Record<string, Voce> = await (await fetch(base + 'elenco.json')).json();
   const chiavi = Object.keys(elenco);
   const viste = VISTE.filter((v) => chiavi.some((k) => k.startsWith(v + '_')));
-  const tex = new Map<string, THREE.Texture>();
+  // HD (di serie, &hd=0 lo spegne): lo sprite si disegna a risoluzione piena sopra il mondo a mezza risoluzione (_banco_hd.ts), con la scala continua
+  const hdVoluto = cfg.hd ?? (new URLSearchParams(location.search).get('hd') !== '0' && !cfg.nitido);
+  const tex = new Map<string, THREE.Texture>(), sorgenti = new Map<string, HTMLImageElement | HTMLCanvasElement>();
   await Promise.all(chiavi.map(async (k) => {
     const img = new Image(); img.src = base + k + '.png'; await img.decode();
-    const t = new THREE.Texture(tingi(img, k.split('_')[1]!)); // il ciano delle armi a strati diventa un segnaposto
+    const sorg = tingi(img, k.split('_')[1]!); sorgenti.set(k, sorg); // il ciano delle armi a strati diventa un segnaposto
+    if (hdVoluto) { tex.set(k, texturaHd(sorg)); return; }
+    const t = new THREE.Texture(sorg);
     t.magFilter = THREE.NearestFilter; t.minFilter = cfg.nitido ? THREE.NearestFilter : THREE.LinearMipmapLinearFilter; t.generateMipmaps = !cfg.nitido; t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; // a scala continua i pixel si rimpiccioliscono: il mipmap li sfuma invece di saltarli
     tex.set(k, t);
   }));
@@ -42,15 +47,16 @@ export async function avvia(cfg: Cfg) {
   const ombra = new THREE.Mesh(new THREE.CircleGeometry(0.62, 12), new THREE.MeshBasicMaterial({ color: 0x1a1030, transparent: true, opacity: 0.38, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
   ombra.rotation.x = -Math.PI / 2; ombra.name = '_banco_sprite_ombra';
   B.scene.add(pivot, ombra);
+  const hd = hdVoluto ? creaHd(B.renderer, quad, () => B.scene) : null;
 
   const st = { x: cfg.x ?? 0, z: cfg.z ?? 0, facing: cfg.facing ?? 0, mossa: cfg.mossa ?? 'cammina', muove: false, mezzo: 0, t: 0, dist: 0 };
   // PASSO: quanti pixel d'arte è lungo un passo disegnato, dal disegno di contatto di profilo (E_<mossa>_1): la larghezza dei piedi
   // nelle 3 righe più basse meno un piede (quella del disegno di passaggio, gambe unite). Coi disegni legati alla distanza i piedi non scivolano.
   const passoPx = new Map<string, number>();
   function larghezzaPiedi(k: string) {
-    const t = tex.get(k), e = elenco[k]; if (!t || !e) return 0;
+    const t = sorgenti.get(k), e = elenco[k]; if (!t || !e) return 0;
     const c = document.createElement('canvas'); c.width = e.w; c.height = e.h;
-    const g = c.getContext('2d')!; g.drawImage(t.image as HTMLImageElement, 0, 0);
+    const g = c.getContext('2d')!; g.drawImage(t, 0, 0);
     const d = g.getImageData(0, 0, e.w, e.h).data; let x0 = e.w, x1 = -1;
     for (let y = Math.max(0, e.ay - 3); y < Math.min(e.h, e.ay); y++) for (let x = 0; x < e.w; x++) if (d[(y * e.w + x) * 4 + 3]! > 0) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); }
     return x1 >= x0 ? x1 - x0 + 1 : 0;
@@ -194,6 +200,7 @@ export async function avvia(cfg: Cfg) {
     const chiave = rp >= 0 ? `${best}_scatto_${1 + scatto.soglie.filter((x) => rp >= x).length}` : c ? `${best}_${c.mossa}_${c.n}` : fermo ?? `${best}_${mossa}_${n}`;
     const e = elenco[chiave]; if (!e) return;
     mat.map = tex.get(chiave)!; mat.needsUpdate = false;
+    if (hd) { hd.disegno(tex.get(chiave)!, e.w, e.h); hd.mostra(); quad.visible = !hd.attivo(); } // in HD lo disegna la passata finale, sopra il mondo
     // il quad guarda la camera (billboard sferico: i pixel restano quadrati sullo schermo), perno ai piedi
     cam.updateMatrixWorld();
     pivot.position.set(st.x, eroe3d!.position.y, st.z);
@@ -224,13 +231,13 @@ export async function avvia(cfg: Cfg) {
       pivot.position.copy(vtmp);
     }
     ombra.position.set(st.x, eroe3d!.position.y + 0.03, st.z);
-    info.dungeon = dun?.name ?? null; info.arma = arma; info.magia = h ? magiaDi(h.magia) : null; info.anim = h?.anim ?? null; info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k;
+    info.dungeon = dun?.name ?? null; info.arma = arma; info.magia = h ? magiaDi(h.magia) : null; info.anim = h?.anim ?? null; info.rotola = rp >= 0; info.vista = best; info.specchio = specchio; info.frame = chiave; info.altezzaSprite = e.h * u; info.k = k; info.pxGiocoPerUnita = +ppu.toFixed(2); info.altoPxGioco = e.h * k; info.hd = !!hd?.attivo();
     info.passoPx = pp ?? 0; info.disegniAlSecondo = pp && dt > 0 ? +(fatti / dt / (pp * voluto0 * lento / (nf / 2))).toFixed(1) : 0;
     void box; avPrec = { x: fx, z: fz };
   }
   B.pre = (s, c) => aggiorna(s, c);
   return {
-    info, st, elenco, scatto, scatta, rimuovi() { B.pre = undefined; pivot.removeFromParent(); ombra.removeFromParent(); removeEventListener('keydown', tasto); bottone.remove(); bottoni.rimuovi(); manoA.rimuovi(); },
+    info, st, elenco, scatto, scatta, rimuovi() { hd?.rimuovi(); quad.visible = true; B.pre = undefined; pivot.removeFromParent(); ombra.removeFromParent(); removeEventListener('keydown', tasto); bottone.remove(); bottoni.rimuovi(); manoA.rimuovi(); },
     metti(p: { x?: number; z?: number; facing?: number; mossa?: string; segui?: boolean }) { if (p.x !== undefined) st.x = p.x; if (p.z !== undefined) st.z = p.z; if (p.facing !== undefined) st.facing = p.facing; if (p.mossa) st.mossa = p.mossa; if (p.segui !== undefined) cfg.segui = p.segui; },
   };
 }
