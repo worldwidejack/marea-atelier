@@ -1,7 +1,7 @@
 # Il protagonista, da zero
-stato: aperta (30/10/2026: una proposta di Riccardo, il protagonista «Quest 1», è nell'Atelier con i gradini 1-6 fatti; non è ancora deciso che sia il definitivo)
+stato: aperta (8/11/2026: disegno scelto tre su tre, il protagonista con la camicia di lino e lo zainetto, `personaggi/protagonista-lino/`, prova PixelLab dell'issue #1; gradino 2 fatto, ora il modello in 5 viste. La proposta «Quest 1» di Riccardo del 30/10 resta in `personaggi/protagonista/`)
 chi: tutti e tre (Jack, Riccardo, Alberto) con i loro AI
-cartella: personaggi/protagonista/
+cartella: personaggi/protagonista-lino/
 
 F3 ha vinto il voto sul look, ma era il personaggio di una prova. Il protagonista vero di MAREA lo rifacciamo insieme, da zero, ed è il primo personaggio dell'Atelier: da lui prendono le misure tutti gli altri (abitanti, mostri, boss).
 
