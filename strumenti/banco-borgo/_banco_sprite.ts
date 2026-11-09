@@ -63,7 +63,12 @@ export async function avvia(cfg: Cfg) {
   }
   for (const m of new Set(chiavi.map((k) => k.split('_')[1]!))) {
     const nf = chiavi.filter((k) => k.startsWith(`E_${m}_`)).length;
-    const largo = larghezzaPiedi(`E_${m}_1`), unito = larghezzaPiedi(`E_${m}_${nf === 8 ? 3 : 2}`);
+    let largo = larghezzaPiedi(`E_${m}_1`), unito = larghezzaPiedi(`E_${m}_${nf === 8 ? 3 : 2}`);
+    // cicli d'altro numero (i 6 di PixelLab cominciano a gambe unite): il disegno più largo meno il più stretto
+    if (nf !== 4 && nf !== 8 && nf > 1) {
+      const l = Array.from({ length: nf }, (_, i) => larghezzaPiedi(`E_${m}_${i + 1}`)).filter((x) => x > 0);
+      if (l.length) { largo = Math.max(...l); unito = Math.min(...l); }
+    }
     // le mosse con l'arma in mano (leggera, arco) hanno il disegno 2 a piedi larghi come il 1: il passo misurato viene 5-7 px e le gambe volano. Le porto al passo della pesante (16 px), che va bene.
     const minimo = nf === 4 && m !== 'cammina' ? 16 : 4;
     if (largo && unito) passoPx.set(m, Math.max(minimo, largo - unito));

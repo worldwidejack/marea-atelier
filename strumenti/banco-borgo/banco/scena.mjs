@@ -12,12 +12,12 @@ if (zoom) await page.evaluate((z) => window.__game.test.setZoom(z), zoom);
 
 const perf0 = await page.evaluate(() => window.__game.perf());
 const t0 = Date.now();
-const carico = await page.evaluate(async ([s, sc]) => {
+const carico = await page.evaluate(async ([s, sc, mo]) => {
   const t = performance.now();
   const m = await import('/src/_banco_sprite.ts');
-  window.__sp = await m.avvia({ set: s, dx: -2.6, scala: sc });
+  window.__sp = await m.avvia({ set: s, dx: -2.6, scala: sc, ...(mo ? { mossa: mo } : {}) });
   return { ms: Math.round(performance.now() - t), viste: window.__sp.info.viste, righe: Object.keys(window.__sp.elenco).length };
-}, [set, scala]);
+}, [set, scala, process.env.MOSSA || '']); // MOSSA=camminata per i personaggi senza la camminata a 4 (cammina)
 console.log('caricamento sprite', JSON.stringify(carico));
 await page.waitForTimeout(1500);
 const perf1 = await page.evaluate(() => window.__game.perf());
