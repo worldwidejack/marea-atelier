@@ -1,6 +1,6 @@
 # Lo stile di MAREA
 
-> Da leggere prima di generare qualsiasi cosa: personaggi, modelli 3D, luoghi, effetti. Quando il protagonista definitivo è approvato (quest 1), le misure dei personaggi si aggiornano su di lui; fino ad allora il metro è F3 della prova dei look (`personaggi/f3-prova/`), e per il mondo il porto «nero 1» (`luoghi/porto-nero-1/`).
+> Da leggere prima di generare qualsiasi cosa: personaggi, modelli 3D, luoghi, effetti. **Il protagonista ufficiale è «Il protagonista (PixelLab di Jack)», `personaggi/protagonista-pixellab/`** (vedi `CLAUDE.md`): le misure dei personaggi si prendono da lui. F3 della prova dei look (`personaggi/f3-prova/`) e gli altri personaggi sono nello Storico idee, non canone. Per il mondo il metro è il porto «nero 1» (`luoghi/porto-nero-1/`).
 
 ## Il look, in una riga
 **Mondo 3D che sembra disegnato, personaggi 2.5D in pixel art** (voto del gruppo, 28/10/2026). Chi ha una faccia (giocatori, abitanti, mostri, boss) è a sprite; le cose e le macchine sono 3D, come alberi ed edifici.
@@ -14,6 +14,7 @@
 - **Crediti**: Higgsfield non si ricarica («non intendo pagare higgsfield più di così», Jack 28/10): generatori gratis, crediti del mese, kit CC0 ridipinti.
 
 ## I personaggi: i numeri
+- **Protagonista ufficiale** (`personaggi/protagonista-pixellab/`): tela 64×64, figura alta **58 px**, **8 direzioni** (5 disegnate S, SE, E, NE, N + 3 a specchio), camminata a 6 disegni, fatto con PixelLab. **Questi numeri hanno la precedenza.** Quelli qui sotto (16 direzioni, 4 disegni, 48 px) vengono dal metodo Codex di F3, che è nello Storico idee: valgono solo finché il gruppo non li rivede per gli altri personaggi.
 - **16 direzioni**: 9 viste disegnate (S, SSE, SE, ESE, E, ENE, NE, NNE, N), le altre 7 sono lo specchio e le fa il gioco.
 - **4 disegni per mossa e per vista** → **36 disegni per mossa**. La camminata fa anche da posa ferma (disegno 2, gambe unite).
 - Protagonista alto **48 px** in piedi. F3: testa grande, circa il **45 %** dell'altezza coi capelli, corpo corto. Proporzioni da gioco cartoon, mai da vita vera.

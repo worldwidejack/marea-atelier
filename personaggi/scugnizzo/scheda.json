@@ -7,8 +7,8 @@
   "testa": 45,
   "modello": "design/scugnizzo_design.jpg",
   "alto": 48,
-  "stato": "in lavorazione",
-  "nota": "Personaggio di Alberto (birbasan) col suo Claude, nato il 02/11/2026. Lo spirito è quello di Rufy di One Piece senza copiarlo (un copricapo che lo fa riconoscere, pochi colori forti, vestiti aperti, sorrisone), con un po' di Goku bambino (capelli a punte, ingenuo e forte). Direzione scelta: lo scugnizzo del molo (bandana con le code al vento, scalzo, cima da ormeggio come cintura), arancio e petrolio. Gradino 0: tre varianti A/B/C con F3 come metro, scelta la A (02/11); poi la A con l'accessorio, scelta la A2 con la borsa a tracolla (design/scugnizzo_design.jpg). Il bastone resta un'idea per l'arma in mano (armi a strati). Modello in 5 viste e camminata a 8 pose in 9 viste (108 sprite, 48 px, 20 colori, 16 direzioni) fatti il 02/11/2026; provato nel Borgo col banco, ok di Alberto (02/11/2026); da far vedere a Jack e Riccardo. Nome segnaposto.",
+  "stato": "storico",
+  "nota": "STORICO IDEE, NON È IL PROTAGONISTA UFFICIALE (è lo scugnizzo del molo, personaggio di prova di Alberto). Il protagonista ufficiale è `personaggi/protagonista-pixellab/`. Personaggio di Alberto (birbasan) col suo Claude, nato il 02/11/2026. Lo spirito è quello di Rufy di One Piece senza copiarlo (un copricapo che lo fa riconoscere, pochi colori forti, vestiti aperti, sorrisone), con un po' di Goku bambino (capelli a punte, ingenuo e forte). Direzione scelta: lo scugnizzo del molo (bandana con le code al vento, scalzo, cima da ormeggio come cintura), arancio e petrolio. Gradino 0: tre varianti A/B/C con F3 come metro, scelta la A (02/11); poi la A con l'accessorio, scelta la A2 con la borsa a tracolla (design/scugnizzo_design.jpg). Il bastone resta un'idea per l'arma in mano (armi a strati). Modello in 5 viste e camminata a 8 pose in 9 viste (108 sprite, 48 px, 20 colori, 16 direzioni) fatti il 02/11/2026; provato nel Borgo col banco, ok di Alberto (02/11/2026); da far vedere a Jack e Riccardo. Nome segnaposto.",
   "viste": {
     "S": "modello/vista_S.jpg",
     "SE": "modello/vista_SE.jpg",

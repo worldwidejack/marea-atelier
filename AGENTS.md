@@ -1,5 +1,15 @@
 # L'Atelier di MAREA — regole per gli AI (Claude, Codex, Gemini…)
 
+## Il protagonista ufficiale — leggi questo per primo
+**Il protagonista di MAREA è «Il protagonista (PixelLab di Jack)»: la cartella `personaggi/protagonista-pixellab/`. Solo lui. Deciso da Riccardo il 12/11/2026.**
+- «Il protagonista», «il PG», «l'eroe», «il personaggio principale» vogliono dire **sempre** `personaggi/protagonista-pixellab/`. Non chiedere quale.
+- Ogni cosa nuova del protagonista (corsa, attacco, magia, armi, viste) si fa lì dentro, partendo dalle sue direzioni ferme (`fogli/pixellab/direzioni/`), dai suoi sprite (`sprite/`) e dalla sua `scheda.json`. Regole fisse: tela 64×64, figura alta 58 px, pixel art vera, palette dell'`ART_BIBLE`; viste disegnate S, SE, E, NE, N, le altre 3 sono lo specchio.
+- **Tutti gli altri personaggi sono «Storico idee»**: idee e prove superate, **non canone**. Non si allegano come riferimento d'aspetto, non si estendono con mosse o viste nuove, non si portano nel gioco (il banco di prova va bene per guardarli). Nella scheda hanno `"stato": "storico"`, nella cartella un file `STORICO.md`; nella galleria stanno nel menù «Storico idee», chiuso e non caricato finché non lo apri.
+- **Attenzione ai nomi, ci si sbaglia facilmente.** `protagonista` (Quest 1), `protagonista-lino` (ha la stessa camicia di lino e lo stesso zaino, ma è la versione Codex a 48 px), `f3-prova`, `scugnizzo`, `viandante` **non sono** il protagonista ufficiale. Lo è solo `protagonista-pixellab`.
+- **Come verificare:** `"ufficiale": true` e `"ruolo": "protagonista"` stanno nella scheda di **una sola** cartella di `personaggi/`; `personaggi/LEGGIMI.md` ha l'elenco. `strumenti/galleria.py` si ferma con un errore se i protagonisti ufficiali non sono esattamente uno.
+- **Prima di toccare una cartella di `personaggi/`**, controlla che sia `protagonista-pixellab`. Se è un'altra, ferma e di' alla persona quale (nome della cartella + una riga). Lo storico si tocca solo se la persona lo chiede per nome.
+- Riprendere un'idea dallo storico serve la decisione delle tre persone (2 su 3): si scrive qui e nella scheda, poi si toglie `storico`. Mai di iniziativa di un AI.
+
 **Cos'è.** Il posto comune dove nasce il mondo di MAREA: personaggi, modelli 3D (edifici, alberi, oggetti, texture), luoghi, effetti, riferimenti. Tutto il world building, non solo i personaggi. Qui si tiene **cosa è stato fatto, da chi, con che generatore e che prompt, e cosa è approvato**, così ogni AI lavora nello stesso stile. Non è il gioco (`worldwidejack/marea`: lì entra quello che è approvato) e non è il banco delle prove (`worldwidejack/marea-prova-look`: lì si prova come rende nel motore).
 Online: **https://worldwidejack.github.io/marea-atelier/** (si rifà da solo a ogni push su `main`, ~1 minuto).
 
@@ -13,7 +23,7 @@ Online: **https://worldwidejack.github.io/marea-atelier/** (si rifà da solo a o
 
 ## Dove va cosa
 ```
-personaggi/<id>/   chi ha una faccia (giocatori, abitanti, mostri, boss): sprite a pixel in 16 direzioni
+personaggi/<id>/   chi ha una faccia (giocatori, abitanti, mostri, boss): sprite a pixel. In pagina c'è solo chi ha "ufficiale": true (oggi il protagonista); il resto è lo Storico idee (vedi sopra)
 modelli/<id>/      le cose 3D: edifici, alberi, rocce, oggetti, barche (disegno → modello, texture dipinte)
 luoghi/<id>/       isole, zone, posti: il kit dei disegni, la mappa, i fogli di com'è venuto
 effetti/<id>/      onde, fulmini, evocazioni, polvere
@@ -29,7 +39,7 @@ Dentro ogni cartella, quello che serve:
 - `sprite/`, `armi/` — gli sprite a pixel tagliati (`<vista>_<mossa>_<n>.png` + `elenco.json`), solo gli approvati.
 - per i personaggi fatti con gli script degli sprite: anche `modello/` (la sagoma e le 5 viste) e `lavori.txt` (i prompt); `controllo/` (il banco di Fenaki) resta sul computer.
 
-`stato`: `idea` → `in lavorazione` → `approvato` (o `riferimento`, come le cose della prova dei look). Approvato = le persone l'hanno visto e nessuno è contrario (o 2 su 3). I bocciati **non si cancellano**: restano in `fogli/` col perché nel REGISTRO, servono a non rifare gli stessi errori.
+`stato`: `idea` → `in lavorazione` → `approvato` (o `riferimento`, come le cose della prova dei look; o `storico`: idea o prova superata, non canone, per i personaggi che non sono il protagonista ufficiale). Approvato = le persone l'hanno visto e nessuno è contrario (o 2 su 3). I bocciati **non si cancellano**: restano in `fogli/` col perché nel REGISTRO, servono a non rifare gli stessi errori.
 Solo immagini (PNG, JPG, WEBP), modelli GLB, JSON e testo. Mai segreti, token, link personali o dati personali: il repo è pubblico.
 
 ## Gli attrezzi

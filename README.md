@@ -4,7 +4,8 @@ Il posto dove nasce il mondo di MAREA: personaggi, modelli 3D, luoghi, effetti, 
 
 **La galleria:** https://worldwidejack.github.io/marea-atelier/
 
-- **Quest aperte** in `quest/`: la prima è il protagonista, da rifare da zero tutti insieme.
+- **Il protagonista ufficiale** è «Il protagonista (PixelLab di Jack)»: `personaggi/protagonista-pixellab/`. Solo lui. Gli altri personaggi sono lo **Storico idee** (menù chiuso nella galleria, non canone): vedi `CLAUDE.md` e `personaggi/LEGGIMI.md`.
+- **Quest aperte** in `quest/`: la prima è il protagonista.
 - **Lo stile** in `STILE.md`: i numeri, le regole e cosa è già stato bocciato.
 - **Le regole per gli AI** in `CLAUDE.md` (uguale ad `AGENTS.md`): fatelo leggere al vostro Claude o Codex prima di generare.
 - **Le stanze**: `personaggi/`, `modelli/`, `luoghi/`, `effetti/`, `riferimenti/`. Ogni pezzo ha la sua cartella con la scheda, il disegno, i fogli generati (anche i bocciati) e il risultato.

@@ -1,7 +1,11 @@
 # Il protagonista, da zero
-stato: aperta (8/11/2026: disegno scelto tre su tre, il protagonista con la camicia di lino e lo zainetto, `personaggi/protagonista-lino/`, prova PixelLab dell'issue #1; gradino 2 fatto, ora il modello in 5 viste. La proposta «Quest 1» di Riccardo del 30/10 resta in `personaggi/protagonista/`)
+stato: aperta
 chi: tutti e tre (Jack, Riccardo, Alberto) con i loro AI
-cartella: personaggi/protagonista-lino/
+cartella: personaggi/protagonista-pixellab/
+
+Il protagonista ufficiale è «Il protagonista (PixelLab di Jack)», `personaggi/protagonista-pixellab/` (deciso da Riccardo il 12/11/2026). La versione Codex `protagonista-lino` e la proposta «Quest 1» `protagonista` sono nello Storico idee, non canone.
+
+Storia: l'8/11/2026 il disegno (camicia di lino, jeans, zainetto) è stato scelto tre su tre; il 9/11 Jack lo ha rifatto con PixelLab a 64 px ed è la versione che proseguiamo.
 
 F3 ha vinto il voto sul look, ma era il personaggio di una prova. Il protagonista vero di MAREA lo rifacciamo insieme, da zero, ed è il primo personaggio dell'Atelier: da lui prendono le misure tutti gli altri (abitanti, mostri, boss).
 
@@ -16,9 +20,9 @@ Ogni gradino si guarda su immagini, mai a parole. Si passa al gradino dopo quand
 6. **Le mosse base**: camminata, scatto con capriola, pozione, le due impugnature col bastone di ciano (leggera, pesante), l'onda energetica. Come F3, ma sue.
 
 ## Fatto quando
-Il protagonista ha 16 direzioni, le mosse base e le due impugnature, la `scheda.json` è `approvato`, e nel banco (`marea-prova-look`) prende il posto di F3.
+Il protagonista ha 16 direzioni, le mosse base e le due impugnature, la `scheda.json` è `approvato`, e nel banco (`marea-prova-look`) prende il posto di F3. (Per il protagonista ufficiale PixelLab le direzioni oggi sono 8, 5 disegnate e 3 a specchio, regola fissa data da Riccardo il 12/11/2026: se il gruppo ne vuole 16, si decide insieme.)
 
 ## Cosa serve sapere
 - Le regole e gli errori già fatti: `STILE.md`.
-- Il riferimento di come deve venire: `personaggi/f3-prova/` (anche online nella galleria).
+- Il riferimento di come deve venire è il protagonista ufficiale stesso, `personaggi/protagonista-pixellab/`. F3 (`personaggi/f3-prova/`) è nello Storico idee, non canone.
 - La ricetta passo per passo: `marea/.claude/skills/sprite-marea/SKILL.md`.

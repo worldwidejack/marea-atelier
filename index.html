@@ -67,6 +67,25 @@
   .stato { display: inline-block; margin: 8px 0 12px; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--carta2); border: 1px solid var(--riga); }
   .stato.approvato { background: var(--erba); color: #13200d; border: 0; }
   .stato.riferimento { background: var(--arancio); color: #2a1606; border: 0; }
+  .stato.storico { background: transparent; color: var(--tenue); border: 1px dashed var(--tenue); }
+  .stato.ufficiale { background: var(--giallo); color: #2a1606; border: 0; }
+  .avviso { margin-top: 28px; background: var(--carta); border: 1px solid var(--giallo); border-left: 6px solid var(--giallo); border-radius: 8px; padding: 14px 18px; }
+  .avviso b { color: var(--giallo); }
+  /* storico idee: un menù chiuso, si carica solo quando lo apri */
+  details.storico { margin-top: 44px; border: 1px dashed var(--tenue); border-radius: 10px; background: var(--carta); }
+  details.storico > summary, details.idea > summary { cursor: pointer; list-style: none; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  details.storico > summary::-webkit-details-marker, details.idea > summary::-webkit-details-marker { display: none; }
+  details.storico > summary::before, details.idea > summary::before { content: '▸'; color: var(--tenue); }
+  details.storico[open] > summary::before, details.idea[open] > summary::before { content: '▾'; }
+  details.storico > summary { padding: 18px 20px; }
+  details.storico > summary .t { font: 800 26px 'Bricolage Grotesque', sans-serif; }
+  details.storico > summary small { color: var(--tenue); font-size: 13px; }
+  .storico-corpo { padding: 0 14px 14px; display: grid; gap: 10px; }
+  details.idea { background: var(--carta2); border: 1px solid var(--riga); border-radius: 8px; }
+  details.idea > summary { padding: 12px 16px; }
+  details.idea > summary b { font: 800 18px 'Bricolage Grotesque', sans-serif; }
+  details.idea > summary small { color: var(--tenue); font-size: 13px; flex: 1 1 260px; }
+  details.idea > .pg { margin: 0 12px 12px; }
   .nota { margin: 0 0 10px; }
   .descr { margin: 0 0 18px; color: var(--tenue); font-size: 13px; font-style: italic; }
   .etichetta-gruppo { font-size: 13px; font-weight: 600; color: var(--piano); margin: 18px 0 8px; }
@@ -126,6 +145,7 @@
       <a href="https://github.com/worldwidejack/marea-atelier/blob/main/CLAUDE.md">Le regole per gli AI</a>
       <a href="https://github.com/worldwidejack/marea-atelier">Il repo</a>
       <a href="https://worldwidejack.github.io/jack-tools/marea-armi/?look=sprite">La prova nel gioco</a>
+      <a href="#storico" id="vai-storico" hidden>Storico idee</a>
     </div>
     <img id="eroe-testata" alt="" hidden>
   </div></header>
@@ -135,6 +155,8 @@
     <div class="titolo-sez"><h2>Quest</h2><span>i lavori aperti: prendine una</span></div>
     <div class="quest" id="quest"></div>
   </section>
+
+  <div class="avviso" id="avviso" hidden></div>
 
   <nav class="filtri" id="filtri"></nav>
   <div id="stanze"></div>
@@ -148,11 +170,11 @@
 <script>
 const VISTE = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N'];
 // le 16 direzioni del gioco: le 9 disegnate e le 7 del lato sinistro, che sono lo specchio
-const GIRO = [...VISTE.map((v) => [v, false]), ...VISTE.slice(1, 8).reverse().map((v) => [v, true])];
-const NOMI_MOSSE = { cammina: 'cammina', camminata: 'camminata a 8 pose', corsa: 'corsa a 8 pose', scatto: 'scatto', bevi: 'pozione', salta: 'salto', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
-// disegni al secondo: 7 di serie (i cicli da 4); i cicli da 8 pose vanno più svelti, la corsa più della camminata
+// (il giro di un personaggio lo costruisce palco() con le viste che ha davvero: il protagonista ufficiale ne ha 5 disegnate + 3 specchiate = 8 direzioni)
+const NOMI_MOSSE = { cammina: 'cammina', camminata: 'camminata', corsa: 'corsa', scatto: 'scatto', bevi: 'pozione', salta: 'salto', leggera: 'arma leggera', pesante: 'arma pesante', onda: 'onda energetica' };
+// disegni al secondo: 7 di serie (i cicli da 4), 8 per i cicli da 6; i cicli da 8 pose vanno più svelti, la corsa più della camminata
 const FPS = { camminata: 10, corsa: 14 };
-const NOMI_STATO ={ idea: 'idea', 'in lavorazione': 'in lavorazione', approvato: 'approvato', riferimento: 'riferimento' };
+const NOMI_STATO = { idea: 'idea', 'in lavorazione': 'in lavorazione', approvato: 'approvato', riferimento: 'riferimento', storico: 'storico idee, non canone' };
 const REPO = 'https://github.com/worldwidejack/marea-atelier/blob/main/';
 
 const cache = new Map();
@@ -178,7 +200,10 @@ function palco(p) {
   if (!nomi.length) return el('div', { class: 'palco' }, el('p', { class: 'didascalia' }, 'Ancora nessuno sprite.'));
   const tela = el('canvas', { width: 240, height: 240 });
   const g = tela.getContext('2d');
-  const stato = { mossa: nomi.includes('cammina') ? 'cammina' : nomi[0], giro: 2, gira: true, t: 0 };
+  // le viste che il personaggio ha davvero, da davanti a dietro, e il giro: quelle disegnate e poi le specchiate
+  const viste = VISTE.filter((v) => nomi.some((m) => tutte[m][v]));
+  const GIRO = [...viste.map((v) => [v, false]), ...viste.slice(1, -1).reverse().map((v) => [v, true])];
+  const stato = { mossa: nomi.includes('cammina') ? 'cammina' : nomi[0], giro: Math.max(0, viste.indexOf('SE')), gira: true, t: 0 };
   const didascalia = el('div', { class: 'didascalia' });
   const chipsMosse = el('div', { class: 'chips' });
   const chipsViste = el('div', { class: 'chips' });
@@ -186,7 +211,7 @@ function palco(p) {
   bottoneGira.addEventListener('click', () => { stato.gira = !stato.gira; aggiornaChips(); });
   for (const m of nomi) chipsMosse.append(el('button', { class: 'chip', 'data-m': m, onclick: () => { stato.mossa = m; aggiornaChips(); } }, NOMI_MOSSE[m] ?? m));
   chipsViste.append(bottoneGira);
-  for (const v of VISTE) chipsViste.append(el('button', { class: 'chip vista', 'data-v': v, onclick: () => { stato.gira = false; stato.giro = VISTE.indexOf(v); aggiornaChips(); } }, v));
+  for (const v of viste) chipsViste.append(el('button', { class: 'chip vista', 'data-v': v, onclick: () => { stato.gira = false; stato.giro = viste.indexOf(v); aggiornaChips(); } }, v));
   function aggiornaChips() {
     for (const b of chipsMosse.children) b.setAttribute('aria-pressed', b.dataset.m === stato.mossa);
     const [v] = GIRO[stato.giro];
@@ -203,7 +228,8 @@ function palco(p) {
     if (stato.gira) stato.giro = Math.floor(stato.t / 0.45) % GIRO.length;
     const [vista, specchio] = GIRO[stato.giro];
     const disegni = tutte[stato.mossa][vista] ?? [];
-    const d = disegni[Math.floor(stato.t * (FPS[stato.mossa] ?? 7)) % Math.max(1, disegni.length)];
+    const fps = disegni.length === 6 ? 8 : (FPS[stato.mossa] ?? 7);
+    const d = disegni[Math.floor(stato.t * fps) % Math.max(1, disegni.length)];
     // sfondo: un pezzo di molo
     g.imageSmoothingEnabled = false;
     g.fillStyle = '#20304a'; g.fillRect(0, 0, 240, 240);
@@ -294,8 +320,30 @@ function modello(p) {
     el('p', {}, el('a', { href: `${REPO}${p.categoria}/${p.id}/scheda.json` }, 'la scheda'))));
 }
 
+// la scheda di un personaggio: lo sprite che si muove e i fogli (la usano la pagina principale e lo Storico idee)
+function scheda(p) {
+  return Object.keys(p.mosse).length || Object.keys(p.armi).length ? el('article', { class: 'pg' }, palco(p), info(p)) : el('article', { class: 'pg solo' }, info(p));
+}
+
+// una riga dello Storico idee: chiusa, la scheda (e le sue immagini) si crea solo quando la apri
+function idea(p) {
+  const n = contaSprite(p);
+  const d = el('details', { class: 'idea' },
+    el('summary', {}, el('b', {}, p.nome), el('span', { class: 'stato storico' }, NOMI_STATO.storico),
+      el('small', {}, [n ? `${n} sprite` : null, p.alto ? `alto ${p.alto} px` : null, p.generatore || null].filter(Boolean).join(' · '))));
+  let fatto = false;
+  d.addEventListener('toggle', () => { if (d.open && !fatto) { fatto = true; d.append(scheda(p)); } });
+  return d;
+}
+
+let storicoEl = null;
+function apriStorico(e) {
+  if (e) e.preventDefault();
+  if (storicoEl) { storicoEl.hidden = false; storicoEl.open = true; storicoEl.scrollIntoView({ behavior: 'smooth' }); }
+}
+
 const STANZE = {
-  personaggi: ['Personaggi', 'tocca una mossa o una vista; «gira» li fa ruotare in 16 direzioni'],
+  personaggi: ['Personaggi ufficiali', 'oggi uno solo, il protagonista: tocca una mossa o una vista, «gira» lo fa ruotare. Le altre idee sono nello Storico idee, in fondo'],
   modelli: ['Modelli 3D', 'girali col dito; «disegno» mostra da cosa sono nati'],
   luoghi: ['Luoghi', 'isole, zone, posti: il kit dei disegni e com\'è venuto'],
   effetti: ['Effetti', 'onde, fulmini, evocazioni, polvere'],
@@ -313,8 +361,18 @@ fetch('galleria.json', { cache: 'no-store' }).then((r) => r.json()).then((dati) 
   if (!dati.quest.length) quest.append(el('p', { class: 'vuoto' }, 'Nessuna quest aperta.'));
   dati.quest.forEach((q, i) => quest.append(el('a', { class: 'q', href: REPO + q.file },
     el('span', { class: 'etichetta' }, `quest ${i + 1} · ${q.stato}`), el('h3', {}, q.titolo), el('p', {}, q.testo), el('small', {}, q.chi ? `chi: ${q.chi}` : 'libera'))));
-  const primo = (dati.categorie.personaggi ?? []).find((p) => p.mosse.cammina?.SE);
-  if (primo) { const t = document.getElementById('eroe-testata'); t.src = primo.mosse.cammina.SE[1].src; t.hidden = false; }
+  const primo = (dati.categorie.personaggi ?? []).find((p) => (p.mosse.cammina ?? p.mosse.camminata)?.SE);
+  if (primo) {
+    const m = primo.mosse.cammina ?? primo.mosse.camminata;
+    const t = document.getElementById('eroe-testata'); t.src = (m.SE[primo.mosse.cammina ? 1 : 0] ?? m.SE[0]).src; t.hidden = false;
+  }
+  const prot = (dati.categorie.personaggi ?? []).find((p) => p.ruolo === 'protagonista');
+  if (prot) {
+    const a = document.getElementById('avviso');
+    a.append(el('b', {}, `Il protagonista ufficiale di MAREA è «${prot.nome}»`), ` (personaggi/${prot.id}/). Solo lui. Tutti gli altri personaggi sono nello `,
+      el('a', { href: '#storico', onclick: apriStorico }, 'Storico idee'), ': idee e prove superate, non sono canone.');
+    a.hidden = false;
+  }
 
   const stanze = document.getElementById('stanze'), filtri = document.getElementById('filtri');
   const sezioni = {};
@@ -324,11 +382,33 @@ fetch('galleria.json', { cache: 'no-store' }).then((r) => r.json()).then((dati) 
     if (!voci.length) corpo.append(el('p', { class: 'vuota' }, `Ancora niente. Si comincia da una cartella in ${cat}/ con la sua scheda.json.`));
     for (const p of voci) {
       if (cat === 'modelli' && p.modelli.length) corpo.append(modello(p));
-      else if (Object.keys(p.mosse).length || Object.keys(p.armi).length) corpo.append(el('article', { class: 'pg' }, palco(p), info(p)));
-      else corpo.append(el('article', { class: 'pg solo' }, info(p)));
+      else corpo.append(scheda(p));
     }
     sezioni[cat] = el('section', { id: cat }, el('div', { class: 'titolo-sez' }, el('h2', {}, titolo), el('span', {}, aiuto)), corpo);
     stanze.append(sezioni[cat]);
+  }
+  // Storico idee: un menù chiuso in fondo; il file con i personaggi si scarica solo quando lo apri
+  const nStorico = dati.storico?.n ?? 0;
+  if (nStorico) {
+    const det = el('details', { class: 'storico', id: 'storico' },
+      el('summary', {}, el('span', { class: 't' }, 'Storico idee'), el('small', {}, `${nStorico} personaggi: idee e prove superate, non sono canone. Non si caricano finché non apri.`)));
+    const corpoS = el('div', { class: 'storico-corpo' });
+    det.append(corpoS);
+    let caricato = false;
+    det.addEventListener('toggle', () => {
+      if (!det.open || caricato) return;
+      caricato = true;
+      corpoS.append(el('p', { class: 'vuoto' }, 'Carico lo storico…'));
+      fetch(dati.storico.file, { cache: 'no-store' }).then((r) => r.json()).then((s) => {
+        corpoS.replaceChildren();
+        for (const p of s.personaggi) corpoS.append(idea(p));
+      }).catch((e) => { caricato = false; console.error(e); corpoS.replaceChildren(el('p', { class: 'vuoto' }, `Non riesco a caricare ${dati.storico.file}.`)); });
+    });
+    stanze.after(det);
+    storicoEl = det;
+    const vai = document.getElementById('vai-storico'); vai.hidden = false; vai.addEventListener('click', apriStorico);
+    if (location.hash === '#storico') det.open = true;
+    window.addEventListener('hashchange', () => { if (location.hash === '#storico') apriStorico(); });
   }
   const chips = [['tutto', 'tutto', tutti.length], ...Object.entries(dati.categorie).map(([c, v]) => [c, STANZE[c]?.[0] ?? c, v.length])];
   for (const [c, t, n] of chips) {
@@ -336,9 +416,11 @@ fetch('galleria.json', { cache: 'no-store' }).then((r) => r.json()).then((dati) 
     b.addEventListener('click', () => {
       for (const x of filtri.children) x.setAttribute('aria-pressed', x === b);
       for (const [k, sez] of Object.entries(sezioni)) sez.hidden = c !== 'tutto' && k !== c;
+      if (storicoEl) storicoEl.hidden = c !== 'tutto' && c !== 'personaggi';
     });
     filtri.append(b);
   }
+  if (storicoEl) { const b = el('button', { class: 'chip', 'aria-pressed': 'false' }, 'storico idee', el('small', {}, String(nStorico))); b.addEventListener('click', apriStorico); filtri.append(b); }
   document.getElementById('piede').textContent = `Aggiornata il ${new Date(dati.aggiornato).toLocaleString('it-IT', { dateStyle: 'long', timeStyle: 'short' })} · si rifà da sola a ogni push su main.`;
 }).catch((e) => { console.error(e); document.getElementById('stanze').append(el('p', { class: 'vuoto' }, 'Manca galleria.json: lancia python3 strumenti/galleria.py')); });
 </script>

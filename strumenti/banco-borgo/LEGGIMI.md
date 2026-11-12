@@ -40,7 +40,7 @@ Con il gioco acceso (`npm run dev`, porta 5173):
   - `node _banco/nitidezza.mjs <personaggio>` confronta con e senza la correzione dei pixel.
   - `node _banco/scatto.mjs <personaggio> [tel|largo]` fa rotolare il personaggio in 4 direzioni e col bottone, fotografa i disegni e dice quanti metri ha fatto (`PORTA=5195` se il gioco non è sulla 5173).
 
-Il personaggio è il nome della cartella in `personaggi/` (ora: `f3-prova` = gli sprite di Jack della prova, `protagonista` = la quest in corso). Gli sprite devono essere quelli di `pixel.py`: `<vista>_<mossa>_<n>.png` + `elenco.json` con `w, h, ax, ay` (ancora = i piedi) e `s` (pixel per unità di mondo).
+Il personaggio è il nome della cartella in `personaggi/` (il protagonista ufficiale è `protagonista-pixellab`; gli altri, come `f3-prova`, `protagonista`, `protagonista-lino`, `scugnizzo`, `viandante`, sono lo Storico idee: nel banco si possono provare, ma non sono canone). Gli sprite devono essere quelli di `pixel.py`: `<vista>_<mossa>_<n>.png` + `elenco.json` con `w, h, ax, ay` (ancora = i piedi) e `s` (pixel per unità di mondo).
 
 ## Cosa abbiamo imparato (29 ott)
 - Il gioco disegna a **mezza risoluzione** (finestra larga: 1 px di gioco = 2 px dello schermo). Uno sprite alto 48 px come il 3D sta in ~31 px di gioco: il «nearest» salta pixel e sgrana. Il banco scala a interi e aggancia i piedi alla griglia (`nitido`, di default). Su telefono 1 px sprite = 1 px gioco ≈ altezza del 3D; su finestra larga dà 1,8× il 3D: per la parità serve uno sprite da ~32 px alti (`pixel.py --alto 32`) o uno strato sprite a risoluzione piena. È una decisione del motore, non del banco.

@@ -1,10 +1,15 @@
 """La galleria dell'Atelier: legge le cartelle del mondo (personaggi, modelli, luoghi, effetti, riferimenti) e quest/,
 e scrive galleria.json, che index.html mostra.
 
+Personaggi: nella pagina principale c'è solo chi ha "ufficiale": true nella scheda (oggi il protagonista, una sola cartella).
+Tutti gli altri sono lo «Storico idee»: vanno in galleria-storico.json, che la pagina scarica solo quando si apre il menù.
+Se non c'è esattamente un protagonista ufficiale ("ruolo": "protagonista" e "ufficiale": true) la galleria non si rifà.
+
 Solo libreria standard (gira anche su GitHub a ogni push). Uso: python3 strumenti/galleria.py
 """
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -61,6 +66,8 @@ def voce(cartella, categoria):
         'tipo': scheda.get('tipo', categoria),
         'nome': scheda.get('nome', cartella.name),
         'stato': scheda.get('stato', 'idea'),
+        'ufficiale': scheda.get('ufficiale') is True,
+        'ruolo': scheda.get('ruolo', ''),
         'nota': scheda.get('nota', ''),
         'descrizione': scheda.get('descrizione', ''),
         'generatore': scheda.get('generatore', ''),
@@ -93,14 +100,29 @@ def quest(f):
 
 
 def main():
+    ora = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    categorie = {c: [voce(d, c) for d in sorted((QUI / c).iterdir()) if d.is_dir()] if (QUI / c).is_dir() else [] for c in CATEGORIE}
+    # personaggi: solo gli ufficiali in pagina, il resto è lo Storico idee (file a parte, caricato su richiesta)
+    ufficiali = [p for p in categorie['personaggi'] if p['ufficiale']]
+    storico = [p for p in categorie['personaggi'] if not p['ufficiale']]
+    protagonisti = [p['id'] for p in ufficiali if p['ruolo'] == 'protagonista']
+    if len(protagonisti) != 1:
+        sys.exit("ERRORE: ci vuole ESATTAMENTE UN protagonista ufficiale (scheda con \"ruolo\": \"protagonista\" e \"ufficiale\": true), "
+                 f"ne ho trovati {len(protagonisti)}: {protagonisti}. Leggi CLAUDE.md, «Il protagonista ufficiale».")
+    for p in storico:
+        if p['stato'] != 'storico':
+            print(f"ATTENZIONE: personaggi/{p['id']} non è ufficiale ma ha stato «{p['stato']}»: finisce nello Storico idee: metti \"stato\": \"storico\" nella scheda.")
+    categorie['personaggi'] = ufficiali
     dati = {
-        'aggiornato': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'aggiornato': ora,
         'quest': [quest(f) for f in sorted((QUI / 'quest').glob('*.md'))],
-        'categorie': {c: [voce(d, c) for d in sorted((QUI / c).iterdir()) if d.is_dir()] if (QUI / c).is_dir() else [] for c in CATEGORIE},
+        'storico': {'file': 'galleria-storico.json', 'n': len(storico)},
+        'categorie': categorie,
     }
     (QUI / 'galleria.json').write_text(json.dumps(dati, ensure_ascii=False, indent=1), encoding='utf-8')
+    (QUI / 'galleria-storico.json').write_text(json.dumps({'aggiornato': ora, 'personaggi': storico}, ensure_ascii=False, indent=1), encoding='utf-8')
     conta = ', '.join(f'{len(v)} {c}' for c, v in dati['categorie'].items())
-    print(f"galleria.json: {conta}, {len(dati['quest'])} quest")
+    print(f"galleria.json: {conta}, {len(dati['quest'])} quest; protagonista ufficiale: {protagonisti[0]}; galleria-storico.json: {len(storico)} personaggi")
 
 
 if __name__ == '__main__':
